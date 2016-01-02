@@ -1,2 +1,2 @@
-include ':ownclient-android-library'
+include ':joshuaglenlee-ownclient-library'
 include ':'

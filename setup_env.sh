@@ -4,7 +4,7 @@
 function initDefault {
     git submodule init
     git submodule update
-    android update lib-project -p owncloud-android-library
+    android update lib-project -p joshuaglenlee-ownclient-library
     android update project -p .
     android update project -p oc_jb_workaround
     android update test-project -p tests -m ..
@@ -12,7 +12,7 @@ function initDefault {
 
 function initForAnt {
 
-	#Gets the owncloud-android-library
+	#Gets the joshuaglenlee-ownclient-library
 	git submodule init
 	git submodule update
 
@@ -20,7 +20,7 @@ function initForAnt {
 	android update lib-project -p libs/android-support-appcompat-v7-exploded-aar --target android-22
 	
 	#As default it updates the ant scripts
-	android update lib-project -p owncloud-android-library
+	android update lib-project -p joshuaglenlee-ownclient-library
 	android update project -p .
 	android update project -p oc_jb_workaround
 	android update test-project -p tests -m ..

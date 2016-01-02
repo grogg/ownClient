@@ -1,4 +1,4 @@
-[submodule "ownclient-android-library"]
+[submodule "joshuaglenlee-ownclient-library"]
 	path = ownclient-android-library
 	url = git://github.com/grogg/android-library.git
 	branch = ownclient

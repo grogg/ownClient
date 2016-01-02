@@ -136,7 +136,7 @@
                 <data android:scheme="@string/oauth2_redirect_scheme" />
             </intent-filter>
             <intent-filter>
-                <action android:name="com.owncloud.android.workaround.accounts.CREATE" />
+                <action android:name="com.joshuaglenlee.ownclient.workaround.accounts.CREATE" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
