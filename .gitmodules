@@ -1,5 +1,5 @@
 [submodule "joshuaglenlee-ownclient-library"]
-	path = ownclient-android-library
+	path = joshuaglenlee-ownclient-library
 	url = git://github.com/grogg/android-library.git
 	branch = ownclient
 [submodule "ocdoc"]
