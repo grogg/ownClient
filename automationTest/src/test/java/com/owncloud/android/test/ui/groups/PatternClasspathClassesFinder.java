@@ -1,4 +1,4 @@
-package com.owncloud.android.test.ui.groups;
+package com.joshuaglenlee.ownclient.test.ui.groups;
 
 import java.io.File;
 import java.io.IOException;

@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.joshuaglenlee.ownclient.test.ui.testSuites;
 
 import static org.junit.Assert.*;
 import io.appium.java_client.android.AndroidDriver;
@@ -34,13 +34,13 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.NoIgnoreTestCategory;
-import com.owncloud.android.test.ui.groups.SmokeTestCategory;
-import com.owncloud.android.test.ui.models.ElementMenuOptions;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.NewFolderPopUp;
-import com.owncloud.android.test.ui.models.WaitAMomentPopUp;
+import com.joshuaglenlee.ownclient.test.ui.actions.Actions;
+import com.joshuaglenlee.ownclient.test.ui.groups.NoIgnoreTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.SmokeTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.models.ElementMenuOptions;
+import com.joshuaglenlee.ownclient.test.ui.models.FileListView;
+import com.joshuaglenlee.ownclient.test.ui.models.NewFolderPopUp;
+import com.joshuaglenlee.ownclient.test.ui.models.WaitAMomentPopUp;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

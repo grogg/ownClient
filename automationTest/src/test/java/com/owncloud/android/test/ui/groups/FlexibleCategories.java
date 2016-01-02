@@ -1,4 +1,4 @@
-package com.owncloud.android.test.ui.groups;
+package com.joshuaglenlee.ownclient.test.ui.groups;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;

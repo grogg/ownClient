@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.groups;
+package com.joshuaglenlee.ownclient.test.ui.groups;
 
 public interface SmokeTestCategory {
 
