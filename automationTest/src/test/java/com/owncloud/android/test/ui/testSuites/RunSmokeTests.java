@@ -18,18 +18,18 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.joshuaglenlee.ownclient.test.ui.testSuites;
 
 import org.junit.experimental.categories.Categories.ExcludeCategory;
 import org.junit.experimental.categories.Categories.IncludeCategory;
 import org.junit.runner.RunWith;
 
-import com.owncloud.android.test.ui.groups.FlexibleCategories;
-import com.owncloud.android.test.ui.groups.IgnoreTestCategory;
-import com.owncloud.android.test.ui.groups.SmokeTestCategory;
-import com.owncloud.android.test.ui.groups.FlexibleCategories.TestClassPrefix;
-import com.owncloud.android.test.ui.groups.FlexibleCategories.TestClassSuffix;
-import com.owncloud.android.test.ui.groups.FlexibleCategories.TestScanPackage;
+import com.joshuaglenlee.ownclient.test.ui.groups.FlexibleCategories;
+import com.joshuaglenlee.ownclient.test.ui.groups.IgnoreTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.SmokeTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.FlexibleCategories.TestClassPrefix;
+import com.joshuaglenlee.ownclient.test.ui.groups.FlexibleCategories.TestClassSuffix;
+import com.joshuaglenlee.ownclient.test.ui.groups.FlexibleCategories.TestScanPackage;
 
 
 @RunWith(FlexibleCategories.class)

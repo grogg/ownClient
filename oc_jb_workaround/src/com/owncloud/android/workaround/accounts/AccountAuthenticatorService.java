@@ -16,7 +16,7 @@
  */
 
 
-package com.owncloud.android.workaround.accounts;
+package com.joshuaglenlee.ownclient.workaround.accounts;
 
 import android.accounts.AbstractAccountAuthenticator;
 import android.accounts.Account;

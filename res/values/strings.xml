@@ -29,6 +29,7 @@
     <string name="drawer_item_logs">Logs</string>
 	<string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
+    <string name="prefs_about">Fork of the original ownCloud app (GPL)</string>
     <string name="prefs_category_general">General</string>
     <string name="prefs_category_more">More</string>
     <string name="prefs_accounts">Accounts</string>

@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.models;
+package com.joshuaglenlee.ownclient.test.ui.models;
 
 import java.util.List;
 
@@ -33,7 +33,7 @@ import org.openqa.selenium.support.CacheLookup;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.Point;
 
-import com.owncloud.android.test.ui.actions.Actions;
+import com.joshuaglenlee.ownclient.test.ui.actions.Actions;
 
 public class FileListView {
 	final AndroidDriver driver;

@@ -4,7 +4,7 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.owncloud.android</groupId>
+    <groupId>com.joshuaglenlee.ownclient</groupId>
     <artifactId>owncloud</artifactId>
     <version>${owncloud.version}</version>
     <packaging>apk</packaging>
@@ -91,10 +91,10 @@
         <!--</dependency>-->
 
 
-        <!-- MUST BE INSTALLED FIRST: cd owncloud-android-library; mvn install -->
+        <!-- MUST BE INSTALLED FIRST: cd joshuaglenlee-ownclient-library; mvn install -->
         <dependency>
-            <groupId>com.owncloud.android</groupId>
-            <artifactId>owncloud-android-library</artifactId>
+            <groupId>com.joshuaglenlee.ownclient</groupId>
+            <artifactId>joshuaglenlee-ownclient-library</artifactId>
             <version>${owncloud.version}</version>
         </dependency>
 

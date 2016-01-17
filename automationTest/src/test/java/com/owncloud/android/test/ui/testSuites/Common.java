@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.joshuaglenlee.ownclient.test.ui.testSuites;
 
 import static org.junit.Assert.*;
 

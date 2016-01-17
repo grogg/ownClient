@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.actions;
+package com.joshuaglenlee.ownclient.test.ui.actions;
 
 import java.util.HashMap;
 
@@ -30,20 +30,20 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.owncloud.android.test.ui.models.CertificatePopUp;
-import com.owncloud.android.test.ui.models.ElementMenuOptions;
-import com.owncloud.android.test.ui.models.GmailSendMailView;
-import com.owncloud.android.test.ui.models.ShareView;
-import com.owncloud.android.test.ui.models.UploadFilesView;
-import com.owncloud.android.test.ui.models.LoginForm;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.MenuList;
-import com.owncloud.android.test.ui.models.NewFolderPopUp;
-import com.owncloud.android.test.ui.models.RemoveConfirmationView;
-import com.owncloud.android.test.ui.models.SettingsView;
-import com.owncloud.android.test.ui.models.WaitAMomentPopUp;
-import com.owncloud.android.test.ui.testSuites.Common;
-import com.owncloud.android.test.ui.testSuites.Config;
+import com.joshuaglenlee.ownclient.test.ui.models.CertificatePopUp;
+import com.joshuaglenlee.ownclient.test.ui.models.ElementMenuOptions;
+import com.joshuaglenlee.ownclient.test.ui.models.GmailSendMailView;
+import com.joshuaglenlee.ownclient.test.ui.models.ShareView;
+import com.joshuaglenlee.ownclient.test.ui.models.UploadFilesView;
+import com.joshuaglenlee.ownclient.test.ui.models.LoginForm;
+import com.joshuaglenlee.ownclient.test.ui.models.FileListView;
+import com.joshuaglenlee.ownclient.test.ui.models.MenuList;
+import com.joshuaglenlee.ownclient.test.ui.models.NewFolderPopUp;
+import com.joshuaglenlee.ownclient.test.ui.models.RemoveConfirmationView;
+import com.joshuaglenlee.ownclient.test.ui.models.SettingsView;
+import com.joshuaglenlee.ownclient.test.ui.models.WaitAMomentPopUp;
+import com.joshuaglenlee.ownclient.test.ui.testSuites.Common;
+import com.joshuaglenlee.ownclient.test.ui.testSuites.Config;
 
 public class Actions {
 
