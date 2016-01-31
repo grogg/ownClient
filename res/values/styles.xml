@@ -28,6 +28,7 @@
 		<item name="colorPrimaryDark">@color/primary_dark</item>
 		<item name="colorAccent">@color/color_accent</item>
 		<item name="android:alertDialogTheme">@style/Theme.ownCloud.Dialog</item>
+		<item name="android:navigationBarColor">@color/primary_dark</item>
 		<item name="alertDialogTheme">@style/ownCloud.AlertDialog</item>
 	</style>
 
@@ -39,6 +40,7 @@
 		<item name="colorPrimaryDark">@color/primary_dark</item>
 		<item name="colorAccent">@color/color_accent</item>
 		<item name="android:alertDialogTheme">@style/Theme.ownCloud.Dialog</item>
+		<item name="android:navigationBarColor">@color/primary_dark</item>
 		<item name="alertDialogTheme">@style/ownCloud.AlertDialog</item>
     </style>
 

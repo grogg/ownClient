@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.joshuaglenlee.ownclient.test.ui.testSuites;
 
 import static org.junit.Assert.*;
 import io.appium.java_client.android.AndroidDriver;
@@ -33,12 +33,12 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.openqa.selenium.ScreenOrientation;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.*;
-import com.owncloud.android.test.ui.models.LoginForm;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.MenuList;
-import com.owncloud.android.test.ui.models.SettingsView;
+import com.joshuaglenlee.ownclient.test.ui.actions.Actions;
+import com.joshuaglenlee.ownclient.test.ui.groups.*;
+import com.joshuaglenlee.ownclient.test.ui.models.LoginForm;
+import com.joshuaglenlee.ownclient.test.ui.models.FileListView;
+import com.joshuaglenlee.ownclient.test.ui.models.MenuList;
+import com.joshuaglenlee.ownclient.test.ui.models.SettingsView;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LoginTestSuite{

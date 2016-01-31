@@ -18,12 +18,12 @@ goto initDefault
 echo "Executing Ant setup..."
 ::If the directory exists the script has already been executed
 
-::Gets the owncloud-android-library
+::Gets the joshuaglenlee-ownclient-library
 call git submodule init
 call git submodule update
 
 call android.bat update project -p libs/android-support-appcompat-v7-exploded-aar --target android-22
-call android.bat update lib-project -p owncloud-android-library
+call android.bat update lib-project -p joshuaglenlee-ownclient-library
 call android.bat update project -p .
 call android.bat update project -p oc_jb_workaround
 call android.bat update test-project -p tests -m ..
@@ -33,7 +33,7 @@ goto complete
 :initDefault
 call git submodule init
 call git submodule update
-call android.bat update lib-project -p owncloud-android-library
+call android.bat update lib-project -p joshuaglenlee-ownclient-library
 call android.bat update project -p .
 call android.bat update project -p oc_jb_workaround
 call android.bat update test-project -p tests -m ..

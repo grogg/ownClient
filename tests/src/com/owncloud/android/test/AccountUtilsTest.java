@@ -18,10 +18,10 @@
  *
  */
 
-package com.owncloud.android.test;
+package com.joshuaglenlee.ownclient.test;
 
-import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
+import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
+import com.joshuaglenlee.ownclient.lib.resources.status.OwnCloudVersion;
 
 import android.test.AndroidTestCase;
 

@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.joshuaglenlee.ownclient.test.ui.testSuites;
 
 
 import static org.junit.Assert.*;
@@ -37,21 +37,21 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.FailingTestCategory;
-import com.owncloud.android.test.ui.groups.InProgressCategory;
-import com.owncloud.android.test.ui.groups.NoIgnoreTestCategory;
-import com.owncloud.android.test.ui.groups.SmokeTestCategory;
-import com.owncloud.android.test.ui.groups.UnfinishedTestCategory;
-import com.owncloud.android.test.ui.models.FileDetailsView;
-import com.owncloud.android.test.ui.models.ElementMenuOptions;
-import com.owncloud.android.test.ui.models.GmailEmailListView;
-import com.owncloud.android.test.ui.models.GmailEmailView;
-import com.owncloud.android.test.ui.models.ImageView;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.NotificationView;
-import com.owncloud.android.test.ui.models.SettingsView;
-import com.owncloud.android.test.ui.models.UploadView;
+import com.joshuaglenlee.ownclient.test.ui.actions.Actions;
+import com.joshuaglenlee.ownclient.test.ui.groups.FailingTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.InProgressCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.NoIgnoreTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.SmokeTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.UnfinishedTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.models.FileDetailsView;
+import com.joshuaglenlee.ownclient.test.ui.models.ElementMenuOptions;
+import com.joshuaglenlee.ownclient.test.ui.models.GmailEmailListView;
+import com.joshuaglenlee.ownclient.test.ui.models.GmailEmailView;
+import com.joshuaglenlee.ownclient.test.ui.models.ImageView;
+import com.joshuaglenlee.ownclient.test.ui.models.FileListView;
+import com.joshuaglenlee.ownclient.test.ui.models.NotificationView;
+import com.joshuaglenlee.ownclient.test.ui.models.SettingsView;
+import com.joshuaglenlee.ownclient.test.ui.models.UploadView;
 
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)

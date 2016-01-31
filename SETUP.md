@@ -88,25 +88,25 @@ The generated APK file is saved in android/build/outputs/apk as android-debug.ap
 * Choose the option 'Android'/'Android Project from Existing Code' and click 'Next'
 * Choose 'android/' folder as root
 * Choose the projects with the next names under the 'New Project Name' column:
-** owncloud-android 
+** joshuaglenlee-ownclient 
 ** android-support-appcompat-v7-exploded-aar
-** owncloud-android-workaround-accounts	(optional)
+** joshuaglenlee-ownclient-workaround-accounts	(optional)
 ** ownCloud Android Library
 ** ownCloud Sample Client (optional)
 ** ownCloud Android library test project (optional)
 ** ownCloud Android library test cases (optional)
-* Do not choose the project owncloud-android-tests; it's obsolete.
+* Do not choose the project joshuaglenlee-ownclient-tests; it's obsolete.
 * Do not enable 'Copy projects into workspace'.
 * Click the 'Finish' button.	
 * Wait for a while; if 'Build automatically' is enabled in Eclipse, some errors could appear during the creation of the projects, but all of them should finally disappear.
 * If any error persists, clean and build manually the next projects in order:
 ** ownCloud Android Library
 ** android-support-appcompat-v7-exploded-aar
-** owncloud-android
+** joshuaglenlee-ownclient
 * If any error on those projects persists, check the project properties. In the 'Android' section, API Level should be
 ** ownCloud Android Library	-> API level 19
 ** android-support-appcompat-v7-exploded-aa -> API level 22
-** owncloud-android	-> API level 22 ; in this project, two library projects should appear referred in the bottom of the dialog: libs\android-support-appcompat-v7-exploded-aar and owncloud-android-library. Add them if needed.
+** joshuaglenlee-ownclient	-> API level 22 ; in this project, two library projects should appear referred in the bottom of the dialog: libs\android-support-appcompat-v7-exploded-aar and joshuaglenlee-ownclient-library. Add them if needed.
 * After those actions you should be good to go. HAVE FUN!
 
 
@@ -140,7 +140,7 @@ Download/install Android plugin for Maven, then build ownCloud with mvn:
 * git clone https://github.com/mosabua/maven-android-sdk-deployer.git
 * cd maven-android-sdk-deployer
 * mvn -pl com.simpligility.android.sdk-deployer:android-22 -am install
-* cd ../android/owncloud-android-library
+* cd ../ownClient/joshuaglenlee-ownclient-library
 * mvn install
 * cd ..
 

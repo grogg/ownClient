@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.models;
+package com.joshuaglenlee.ownclient.test.ui.models;
 
 import org.openqa.selenium.support.PageFactory;
 

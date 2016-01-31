@@ -18,7 +18,7 @@
  *
  */
 
-package com.owncloud.android.test.ui.testSuites;
+package com.joshuaglenlee.ownclient.test.ui.testSuites;
 
 
 import static org.junit.Assert.*;
@@ -31,13 +31,13 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.rules.TestName;
 
-import com.owncloud.android.test.ui.actions.Actions;
-import com.owncloud.android.test.ui.groups.NoIgnoreTestCategory;
-import com.owncloud.android.test.ui.groups.SmokeTestCategory;
-import com.owncloud.android.test.ui.models.LoginForm;
-import com.owncloud.android.test.ui.models.FileListView;
-import com.owncloud.android.test.ui.models.MenuList;
-import com.owncloud.android.test.ui.models.SettingsView;
+import com.joshuaglenlee.ownclient.test.ui.actions.Actions;
+import com.joshuaglenlee.ownclient.test.ui.groups.NoIgnoreTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.groups.SmokeTestCategory;
+import com.joshuaglenlee.ownclient.test.ui.models.LoginForm;
+import com.joshuaglenlee.ownclient.test.ui.models.FileListView;
+import com.joshuaglenlee.ownclient.test.ui.models.MenuList;
+import com.joshuaglenlee.ownclient.test.ui.models.SettingsView;
 
 public class LogoutTestSuite{
 	
