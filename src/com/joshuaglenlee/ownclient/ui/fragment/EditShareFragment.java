@@ -19,7 +19,7 @@
  *
  */
 
-package com.owncloud.android.ui.fragment;
+package com.joshuaglenlee.ownclient.ui.fragment;
 
 import android.accounts.Account;
 import android.os.Bundle;
@@ -31,14 +31,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 
-import com.owncloud.android.R;
-import com.owncloud.android.datamodel.FileDataStorageManager;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.shares.OCShare;
-import com.owncloud.android.lib.resources.shares.SharePermissionsBuilder;
-import com.owncloud.android.ui.activity.FileActivity;
+import com.joshuaglenlee.ownclient.R;
+import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
+import com.joshuaglenlee.ownclient.lib.resources.shares.SharePermissionsBuilder;
+import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 
 public class EditShareFragment extends Fragment {
 
@@ -368,7 +368,7 @@ public class EditShareFragment extends Fragment {
     /**
      * Get {@link OCShare} instance from DB and updates the UI.
      *
-     * Depends on the parent Activity provides a {@link com.owncloud.android.datamodel.FileDataStorageManager}
+     * Depends on the parent Activity provides a {@link com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager}
      * instance ready to use. If not ready, does nothing.
      */
     public void refreshUiFromDB() {
@@ -381,7 +381,7 @@ public class EditShareFragment extends Fragment {
     /**
      * Get {@link OCShare} instance from DB and updates the UI.
      *
-     * Depends on the parent Activity provides a {@link com.owncloud.android.datamodel.FileDataStorageManager}
+     * Depends on the parent Activity provides a {@link com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager}
      * instance ready to use. If not ready, does nothing.
      *
      * @param editShareView     Root view in the fragment.

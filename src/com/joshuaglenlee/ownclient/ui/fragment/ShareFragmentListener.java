@@ -19,9 +19,9 @@
  *
  */
 
-package com.owncloud.android.ui.fragment;
+package com.joshuaglenlee.ownclient.ui.fragment;
 
-import com.owncloud.android.lib.resources.shares.OCShare;
+import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
 
 /**
  * This interface must be implemented by activities that contain this
