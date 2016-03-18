@@ -24,10 +24,6 @@ package com.joshuaglenlee.ownclient.syncadapter;
 
 import java.io.IOException;
 
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
-
 import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils.AccountNotFoundException;
@@ -114,12 +110,4 @@ public abstract class AbstractOwnCloudSyncAdapter extends
         return mClient;
     }
     
-    
-    /* method called by ContactSyncAdapter, that is never used */
-    protected HttpResponse fireRawRequest(HttpRequest query)
-            throws ClientProtocolException, OperationCanceledException,
-            AuthenticatorException, IOException {
-        return null;
-    }
-
 }
