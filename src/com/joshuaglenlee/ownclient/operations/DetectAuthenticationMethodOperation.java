@@ -33,6 +33,8 @@ import com.joshuaglenlee.ownclient.lib.resources.files.ExistenceCheckRemoteOpera
 import android.content.Context;
 import android.net.Uri;
 
+import org.apache.commons.httpclient.HttpStatus;
+
 /**
  * Operation to find out what authentication method requires
  * the server to access files.
@@ -98,7 +100,7 @@ public class DetectAuthenticationMethodOperation extends RemoteOperation {
         } 
 
         // analyze response  
-        if (result.getCode() == ResultCode.UNAUTHORIZED) {
+        if (result.getHttpCode() == HttpStatus.SC_UNAUTHORIZED) {
             String authRequest = ((result.getAuthenticateHeader()).trim()).toLowerCase();
             if (authRequest.startsWith("basic")) {
                 authMethod = AuthenticationMethod.BASIC_HTTP_AUTH;

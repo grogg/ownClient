@@ -19,8 +19,8 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joshuaglenlee.ownclient"
-    android:versionCode="8"
-    android:versionName="1.0.7" >
+    android:versionCode="9"
+    android:versionName="1.0.8" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -70,8 +70,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.UploadFilesActivity" />
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.Uploader" >
+        <activity android:name=".ui.activity.UploadFilesActivity" />
+        <activity android:name=".ui.activity.ReceiveExternalFilesActivity"
+                  android:taskAffinity=""
+                  android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -162,13 +164,24 @@
         <service android:name="com.joshuaglenlee.ownclient.files.services.FileUploader" />
         <service android:name="com.joshuaglenlee.ownclient.media.MediaService" />
 
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.PassCodeActivity" />
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.ConflictsResolveActivity" />
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.GenericExplanationActivity" />
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.ErrorsWhileCopyingHandlerActivity" />
-        <activity android:name="com.joshuaglenlee.ownclient.ui.activity.LogHistoryActivity" />
+        <activity android:name=".ui.activity.PassCodeActivity" />
+        <activity android:name=".ui.activity.ConflictsResolveActivity"/>
+        <activity android:name=".ui.activity.GenericExplanationActivity"/>
+        <activity android:name=".ui.activity.ErrorsWhileCopyingHandlerActivity"/>
+        
+        <activity android:name=".ui.activity.LogHistoryActivity"/>
 
-        <receiver android:name="com.joshuaglenlee.ownclient.files.InstantUploadBroadcastReceiver" >
+        <activity android:name=".ui.errorhandling.ErrorShowActivity" />
+        <activity android:name=".ui.activity.UploadListActivity" />
+        
+        <receiver android:name=".files.services.ConnectivityActionReceiver"
+		    android:enabled="true" android:label="ConnectivityActionReceiver">
+		    <intent-filter>
+		        <!--action android:name="android.net.conn.CONNECTIVITY_CHANGE"/-->
+		        <action android:name="android.net.wifi.STATE_CHANGE"/>
+		    </intent-filter>
+		</receiver>
+		<receiver android:name=".files.InstantUploadBroadcastReceiver">
             <intent-filter>
 
                 <!-- unofficially supported by many Android phones but not by HTC devices: -->
@@ -182,9 +195,6 @@
                 <action android:name="android.hardware.action.NEW_VIDEO" />
 
                 <data android:mimeType="video/*" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
         <receiver android:name="com.joshuaglenlee.ownclient.files.BootupBroadcastReceiver" >
@@ -208,7 +218,7 @@
         <activity
             android:name="com.joshuaglenlee.ownclient.ui.activity.ShareActivity"
             android:label="@string/share_dialog_title"
-            android:theme="@style/Theme.ownCloud.Dialog"
+            android:theme="@style/Theme.ownCloud.Dialog.NoTitle"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>

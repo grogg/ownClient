@@ -66,8 +66,7 @@
 	</PreferenceCategory>
 	
 	<PreferenceCategory android:title="@string/prefs_category_more" android:key="more">
-		<Preference android:id="@+id/about_app" android:title="@string/about_title" android:key="about_app" />
-		<Preference android:title="@string/prefs_about"/>
+		<Preference android:title="@string/about_title" android:id="@+id/about_app" android:key="about_app" />
 	</PreferenceCategory>
     
 
