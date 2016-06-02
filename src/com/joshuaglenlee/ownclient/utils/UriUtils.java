@@ -31,7 +31,7 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 
-import com.owncloud.android.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
 
 /**

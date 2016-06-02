@@ -26,16 +26,16 @@ package com.joshuaglenlee.ownclient.operations;
  */
 
 
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.resources.files.FileUtils;
-import com.owncloud.android.lib.resources.shares.CreateRemoteShareOperation;
-import com.owncloud.android.lib.resources.shares.GetRemoteSharesForFileOperation;
-import com.owncloud.android.lib.resources.shares.OCShare;
-import com.owncloud.android.lib.resources.shares.ShareType;
-import com.owncloud.android.operations.common.SyncOperation;
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.resources.files.FileUtils;
+import com.joshuaglenlee.ownclient.lib.resources.shares.CreateRemoteShareOperation;
+import com.joshuaglenlee.ownclient.lib.resources.shares.GetRemoteSharesForFileOperation;
+import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
+import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
+import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
 
 import java.util.ArrayList;
 

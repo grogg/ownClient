@@ -25,26 +25,14 @@ import android.content.Context;
 import android.view.Menu;
 import android.view.MenuItem;
 
-<<<<<<< HEAD:src/com/joshuaglenlee/ownclient/files/FileMenuFilter.java
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader.FileDownloaderBinder;
-import com.joshuaglenlee.ownclient.files.services.FileUploader;
 import com.joshuaglenlee.ownclient.files.services.FileUploader.FileUploaderBinder;
 import com.joshuaglenlee.ownclient.lib.resources.status.OCCapability;
 import com.joshuaglenlee.ownclient.services.OperationsService.OperationsServiceBinder;
 import com.joshuaglenlee.ownclient.ui.activity.ComponentsGetter;
-=======
-import com.owncloud.android.R;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.files.services.FileDownloader;
-import com.owncloud.android.files.services.FileDownloader.FileDownloaderBinder;
-import com.owncloud.android.files.services.FileUploader.FileUploaderBinder;
-import com.owncloud.android.lib.resources.status.OCCapability;
-import com.owncloud.android.services.OperationsService.OperationsServiceBinder;
-import com.owncloud.android.ui.activity.ComponentsGetter;
->>>>>>> 77a9e623136a19f18517928c7e338d15525180a9:src/com/owncloud/android/files/FileMenuFilter.java
 
 import java.util.ArrayList;
 import java.util.List;

@@ -17,7 +17,7 @@
  *
  */
 
-package com.owncloud.android.utils;
+package com.joshuaglenlee.ownclient.utils;
 
 import android.webkit.MimeTypeMap;
 

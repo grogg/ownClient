@@ -38,11 +38,11 @@ import android.os.PowerManager;
 import android.support.v7.app.NotificationCompat;
 import android.widget.Toast;
 
-import com.owncloud.android.R;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.ui.activity.FileActivity;
-import com.owncloud.android.ui.activity.FileDisplayActivity;
+import com.joshuaglenlee.ownclient.R;
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
+import com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity;
 
 import java.io.IOException;
 
@@ -59,7 +59,7 @@ public class MediaService extends Service implements OnCompletionListener, OnPre
     private static final String TAG = MediaService.class.getSimpleName();
 
     private static final String MY_PACKAGE = MediaService.class.getPackage() != null ?
-            MediaService.class.getPackage().getName() : "com.owncloud.android.media";
+            MediaService.class.getPackage().getName() : "com.joshuaglenlee.ownclient.media";
     
     /// Intent actions that we are prepared to handle
     public static final String ACTION_PLAY_FILE = MY_PACKAGE + ".action.PLAY_FILE";
