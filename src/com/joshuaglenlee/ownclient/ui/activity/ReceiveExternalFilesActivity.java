@@ -58,6 +58,7 @@ import com.joshuaglenlee.ownclient.authentication.AccountAuthenticator;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.db.PreferenceManager;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudAccount;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
@@ -73,6 +74,7 @@ import com.joshuaglenlee.ownclient.ui.fragment.TaskRetainerFragment;
 import com.joshuaglenlee.ownclient.ui.helpers.UriUploader;
 import com.joshuaglenlee.ownclient.utils.DisplayUtils;
 import com.joshuaglenlee.ownclient.utils.ErrorMessageAdapter;
+import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -263,14 +265,26 @@ public class ReceiveExternalFilesActivity extends FileActivity
             });
             return builder.create();
         case DIALOG_MULTIPLE_ACCOUNT:
-            CharSequence ac[] = new CharSequence[
-                    mAccountManager.getAccountsByType(MainApp.getAccountType()).length];
-            for (int i = 0; i < ac.length; ++i) {
-                ac[i] = DisplayUtils.convertIdn(
-                        mAccountManager.getAccountsByType(MainApp.getAccountType())[i].name, false);
+            Account accounts[] = mAccountManager.getAccountsByType(MainApp.getAccountType());
+            CharSequence dialogItems[] = new CharSequence[accounts.length];
+            OwnCloudAccount oca;
+            for (int i = 0; i < dialogItems.length; ++i) {
+                try {
+                    oca = new OwnCloudAccount(accounts[i], this);
+                    dialogItems[i] =
+                        oca.getDisplayName() + " @ " +
+                        DisplayUtils.convertIdn(
+                            accounts[i].name.substring(accounts[i].name.lastIndexOf("@") + 1),
+                            false
+                        );
+
+                } catch (Exception e) {
+                    Log_OC.w(TAG, "Couldn't read display name of account; using account name instead");
+                    dialogItems[i] = DisplayUtils.convertIdn(accounts[i].name, false);
+                }
             }
             builder.setTitle(R.string.common_choose_account);
-            builder.setItems(ac, new OnClickListener() {
+            builder.setItems(dialogItems, new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     setAccount(mAccountManager.getAccountsByType(MainApp.getAccountType())[which]);
@@ -313,6 +327,8 @@ public class ReceiveExternalFilesActivity extends FileActivity
         Log_OC.d(TAG, "on item click");
         // TODO Enable when "On Device" is recovered ?
         Vector<OCFile> tmpfiles = getStorageManager().getFolderContent(mFile /*, false*/);
+        tmpfiles = sortFileList(tmpfiles);
+
         if (tmpfiles.size() <= 0) return;
         // filter on dirtype
         Vector<OCFile> files = new Vector<>();
@@ -378,15 +394,17 @@ public class ReceiveExternalFilesActivity extends FileActivity
         setContentView(R.layout.uploader_layout);
 
         ListView mListView = (ListView) findViewById(android.R.id.list);
+        ActionBar actionBar = getSupportActionBar();
 
         String current_dir = mParents.peek();
         if (current_dir.equals("")) {
-            getSupportActionBar().setTitle(getString(R.string.default_display_name_for_root_folder));
+            actionBar.setTitle(getString(R.string.uploader_top_message));
         } else {
-            getSupportActionBar().setTitle(current_dir);
+            actionBar.setTitle(current_dir);
         }
+
         boolean notRoot = (mParents.size() > 1);
-        ActionBar actionBar = getSupportActionBar();
+
         actionBar.setDisplayHomeAsUpEnabled(notRoot);
         actionBar.setHomeButtonEnabled(notRoot);
 
@@ -398,11 +416,13 @@ public class ReceiveExternalFilesActivity extends FileActivity
         if (mFile != null) {
             // TODO Enable when "On Device" is recovered ?
             Vector<OCFile> files = getStorageManager().getFolderContent(mFile/*, false*/);
-            List<HashMap<String, OCFile>> data = new LinkedList<>();
+            files = sortFileList(files);
+
+            List<HashMap<String, Object>> data = new LinkedList<>();
             for (OCFile f : files) {
-                HashMap<String, OCFile> h = new HashMap<>();
-                    h.put("dirname", f);
-                    data.add(h);
+                HashMap<String, Object> h = new HashMap<>();
+                h.put("dirname", f);
+                data.add(h);
             }
 
             UploaderAdapter sa = new UploaderAdapter(this,
@@ -446,6 +466,14 @@ public class ReceiveExternalFilesActivity extends FileActivity
         synchFolderOp.execute(getAccount(), this, null, null);
     }
 
+    private Vector<OCFile> sortFileList(Vector<OCFile> files) {
+        // Read sorting order, default to sort by name ascending
+        FileStorageUtils.mSortOrder = PreferenceManager.getSortOrder(this);
+        FileStorageUtils.mSortAscending = PreferenceManager.getSortAscending(this);
+
+        files = FileStorageUtils.sortFolder(files);
+        return files;
+    }
 
     private String generatePath(Stack<String> dirs) {
         String full_path = "";
@@ -577,6 +605,7 @@ public class ReceiveExternalFilesActivity extends FileActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
         menu.findItem(R.id.action_sort).setVisible(false);
+        menu.findItem(R.id.action_switch_view).setVisible(false);
         menu.findItem(R.id.action_sync_account).setVisible(false);
         return true;
     }

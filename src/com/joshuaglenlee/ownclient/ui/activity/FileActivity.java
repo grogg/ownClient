@@ -456,8 +456,16 @@ public class FileActivity extends AppCompatActivity
     protected void setUsernameInDrawer(View navigationDrawerLayout, Account account) {
         if (navigationDrawerLayout != null && account != null) {
             TextView username = (TextView) navigationDrawerLayout.findViewById(R.id.drawer_username);
-            int lastAtPos = account.name.lastIndexOf("@");
-            username.setText(account.name.substring(0, lastAtPos));
+            try {
+                OwnCloudAccount oca = new OwnCloudAccount(account, this);
+                username.setText(oca.getDisplayName());
+
+            } catch (Exception e) {
+                Log_OC.w(TAG, "Couldn't read display name of account; using account name instead");
+
+                int lastAtPos = account.name.lastIndexOf("@");
+                username.setText(account.name.substring(0, lastAtPos));
+            }
         }
     }
 
@@ -708,7 +716,7 @@ public class FileActivity extends AppCompatActivity
             mCapabilities = mStorageManager.getCapability(mAccount.name);
 
         } else {
-            Log_OC.wtf(TAG, "onAccountChanged was called with NULL account associated!");
+            Log_OC.e(TAG, "onAccountChanged was called with NULL account associated!");
         }
     }
 
@@ -826,8 +834,7 @@ public class FileActivity extends AppCompatActivity
                 account = getAccount();
             }
             OwnCloudClient client;
-            OwnCloudAccount ocAccount =
-                    new OwnCloudAccount(account, context);
+            OwnCloudAccount ocAccount = new OwnCloudAccount(account, context);
             client = (OwnCloudClientManagerFactory.getDefaultSingleton().
                     removeClientFor(ocAccount));
             if (client != null) {
@@ -912,11 +919,15 @@ public class FileActivity extends AppCompatActivity
         // grant that only one waiting dialog is shown
         dismissLoadingDialog();
         // Construct dialog
-        LoadingDialog loading = new LoadingDialog(message);
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        loading.show(ft, DIALOG_WAIT_TAG);
-
+        Fragment frag = getSupportFragmentManager().findFragmentByTag(DIALOG_WAIT_TAG);
+        if (frag == null) {
+            Log_OC.d(TAG, "show loading dialog");
+            LoadingDialog loading = new LoadingDialog(message);
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            loading.show(ft, DIALOG_WAIT_TAG);
+            fm.executePendingTransactions();
+        }
     }
 
 
@@ -926,6 +937,7 @@ public class FileActivity extends AppCompatActivity
     public void dismissLoadingDialog() {
         Fragment frag = getSupportFragmentManager().findFragmentByTag(DIALOG_WAIT_TAG);
         if (frag != null) {
+            Log_OC.d(TAG, "dismiss loading dialog");
             LoadingDialog loading = (LoadingDialog) frag;
             loading.dismiss();
         }

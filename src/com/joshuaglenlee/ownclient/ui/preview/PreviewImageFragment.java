@@ -46,7 +46,7 @@ import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.files.FileMenuFilter;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.dialog.ConfirmationDialogFragment;
-import com.joshuaglenlee.ownclient.ui.dialog.RemoveFileDialogFragment;
+import com.joshuaglenlee.ownclient.ui.dialog.RemoveFilesDialogFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.FileFragment;
 import com.joshuaglenlee.ownclient.utils.BitmapUtils;
 import com.joshuaglenlee.ownclient.utils.DisplayUtils;
@@ -294,7 +294,7 @@ public class PreviewImageFragment extends FileFragment {
                 return true;
             }
             case R.id.action_remove_file: {
-                RemoveFileDialogFragment dialog = RemoveFileDialogFragment.newInstance(getFile());
+                RemoveFilesDialogFragment dialog = RemoveFilesDialogFragment.newInstance(getFile());
                 dialog.show(getFragmentManager(), ConfirmationDialogFragment.FTAG_CONFIRMATION);
                 return true;
             }
@@ -319,7 +319,7 @@ public class PreviewImageFragment extends FileFragment {
                 return true;
             }
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 

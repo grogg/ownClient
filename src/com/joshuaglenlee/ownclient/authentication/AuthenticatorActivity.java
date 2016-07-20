@@ -79,7 +79,8 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.status.OwnCloudVersion;
-import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserNameOperation;
+import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserInfoOperation;
+import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserInfoOperation.UserInfo;
 import com.joshuaglenlee.ownclient.operations.DetectAuthenticationMethodOperation.AuthenticationMethod;
 import com.joshuaglenlee.ownclient.operations.GetServerInfoOperation;
 import com.joshuaglenlee.ownclient.operations.OAuth2GetAccessToken;
@@ -205,7 +206,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Log_OC.wtf(TAG,  "onCreate init");
+        //Log_OC.e(TAG,  "onCreate init");
         super.onCreate(savedInstanceState);
 
         // Workaround, for fixing a problem with Android Library Suppor v7 19
@@ -285,7 +286,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         /// initialize block to be moved to single Fragment to retrieve and validate credentials 
         initAuthorizationPreFragment(savedInstanceState);
 
-        //Log_OC.wtf(TAG,  "onCreate end");
+        //Log_OC.e(TAG,  "onCreate end");
     }
 
     private void initAuthTokenType() {
@@ -602,7 +603,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        //Log_OC.wtf(TAG, "onSaveInstanceState init" );
+        //Log_OC.e(TAG, "onSaveInstanceState init" );
         super.onSaveInstanceState(outState);
 
         /// global state
@@ -642,7 +643,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         }
         mAsyncTask = null;
 
-        //Log_OC.wtf(TAG, "onSaveInstanceState end" );
+        //Log_OC.e(TAG, "onSaveInstanceState end" );
     }
 
     @Override
@@ -759,7 +760,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 queryParameters);
         
         if (mOperationsServiceBinder != null) {
-            //Log_OC.wtf(TAG, "getting access token..." );
+            //Log_OC.e(TAG, "getting access token..." );
             mWaitingForOpId = mOperationsServiceBinder.queueNewOperation(getServerInfoIntent);
         }
     }
@@ -836,7 +837,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             if (mOperationsServiceBinder != null) {
                 mWaitingForOpId = mOperationsServiceBinder.queueNewOperation(getServerInfoIntent);
             } else {
-              Log_OC.wtf(TAG, "Server check tried with OperationService unbound!" );
+              Log_OC.e(TAG, "Server check tried with OperationService unbound!" );
             }
             
         } else {
@@ -1030,7 +1031,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         } else if (operation instanceof OAuth2GetAccessToken) {
             onGetOAuthAccessTokenFinish(result);
 
-        } else if (operation instanceof GetRemoteUserNameOperation) {
+        } else if (operation instanceof GetRemoteUserInfoOperation) {
             onGetUserNameFinish(result);
         }
 
@@ -1040,7 +1041,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mWaitingForOpId = Long.MAX_VALUE;
         if (result.isSuccess()) {
             boolean success = false;
-            String username = (String) result.getData().get(0);
+            String username;
+            if (result.getData().get(0) instanceof UserInfo) {
+                username = ((UserInfo) result.getData().get(0)).mDisplayName;
+            } else {
+                username = (String) result.getData().get(0);
+            }
 
             if ( mAction == ACTION_CREATE) {
                 mUsernameInput.setText(username);
@@ -1594,6 +1600,18 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             mAccountMgr.setUserData(
                     mAccount, Constants.KEY_OC_BASE_URL,   mServerInfo.mBaseUrl
             );
+            if (authResult.getData() != null) {
+                try {
+                    UserInfo userInfo = (UserInfo) authResult.getData().get(0);
+                    mAccountMgr.setUserData(
+                        mAccount, Constants.KEY_DISPLAY_NAME, userInfo.mDisplayName
+                    );
+                } catch (ClassCastException c) {
+                    Log_OC.w(TAG, "Couldn't get display name for " + username);
+                }
+            } else {
+                Log_OC.w(TAG, "Couldn't get display name for " + username);
+            }
 
             if (isSaml) {
                 mAccountMgr.setUserData(mAccount, Constants.KEY_SUPPORTS_SAML_WEB_SSO, "TRUE"); 
@@ -1869,7 +1887,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
 
     private void doOnResumeAndBound() {
-        //Log_OC.wtf(TAG, "registering to listen for operation callbacks" );
+        //Log_OC.e(TAG, "registering to listen for operation callbacks" );
         mOperationsServiceBinder.addOperationListener(AuthenticatorActivity.this, mHandler);
         if (mWaitingForOpId <= Integer.MAX_VALUE) {
             mOperationsServiceBinder.dispatchResultIfFinished((int)mWaitingForOpId, this);

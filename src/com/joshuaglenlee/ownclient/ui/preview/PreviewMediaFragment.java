@@ -59,7 +59,7 @@ import com.joshuaglenlee.ownclient.media.MediaService;
 import com.joshuaglenlee.ownclient.media.MediaServiceBinder;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 import com.joshuaglenlee.ownclient.ui.dialog.ConfirmationDialogFragment;
-import com.joshuaglenlee.ownclient.ui.dialog.RemoveFileDialogFragment;
+import com.joshuaglenlee.ownclient.ui.dialog.RemoveFilesDialogFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.FileFragment;
 
 
@@ -357,7 +357,7 @@ public class PreviewMediaFragment extends FileFragment implements
                 return true;
             }
             case R.id.action_remove_file: {
-                RemoveFileDialogFragment dialog = RemoveFileDialogFragment.newInstance(getFile());
+                RemoveFilesDialogFragment dialog = RemoveFilesDialogFragment.newInstance(getFile());
                 dialog.show(getFragmentManager(), ConfirmationDialogFragment.FTAG_CONFIRMATION);
                 return true;
             }
@@ -382,7 +382,7 @@ public class PreviewMediaFragment extends FileFragment implements
                 return true;
             }
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 

@@ -40,7 +40,7 @@ import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity;
 import com.joshuaglenlee.ownclient.ui.dialog.ConfirmationDialogFragment;
 import com.joshuaglenlee.ownclient.ui.dialog.LoadingDialog;
-import com.joshuaglenlee.ownclient.ui.dialog.RemoveFileDialogFragment;
+import com.joshuaglenlee.ownclient.ui.dialog.RemoveFilesDialogFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.FileFragment;
 
 import java.io.BufferedWriter;
@@ -340,7 +340,7 @@ public class PreviewTextFragment extends FileFragment {
                 return true;
             }
             case R.id.action_remove_file: {
-                RemoveFileDialogFragment dialog = RemoveFileDialogFragment.newInstance(getFile());
+                RemoveFilesDialogFragment dialog = RemoveFilesDialogFragment.newInstance(getFile());
                 dialog.show(getFragmentManager(), ConfirmationDialogFragment.FTAG_CONFIRMATION);
                 return true;
             }
@@ -358,7 +358,7 @@ public class PreviewTextFragment extends FileFragment {
             }
 
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 

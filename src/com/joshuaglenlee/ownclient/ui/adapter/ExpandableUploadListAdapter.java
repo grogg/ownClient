@@ -19,6 +19,7 @@
  */
 package com.joshuaglenlee.ownclient.ui.adapter;
 
+import android.accounts.Account;
 import android.content.Context;
 import android.database.DataSetObserver;
 import android.graphics.Bitmap;
@@ -36,6 +37,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.joshuaglenlee.ownclient.R;
+import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.datamodel.ThumbnailsCacheManager;
 import com.joshuaglenlee.ownclient.datamodel.UploadsStorageManager;
@@ -43,6 +45,7 @@ import com.joshuaglenlee.ownclient.datamodel.UploadsStorageManager.UploadStatus;
 import com.joshuaglenlee.ownclient.db.OCUpload;
 import com.joshuaglenlee.ownclient.db.UploadResult;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudAccount;
 import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressListener;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
@@ -238,7 +241,17 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
             uploadDateTextView.setText(dateString);
 
             TextView accountNameTextView = (TextView) view.findViewById(R.id.upload_account);
-            accountNameTextView.setText(upload.getAccountName());
+            try {
+                Account account = AccountUtils.getOwnCloudAccountByName(mParentActivity, upload.getAccountName());
+                OwnCloudAccount oca = new OwnCloudAccount(account, mParentActivity);
+                accountNameTextView.setText(
+                    oca.getDisplayName() + " @ " +
+                    DisplayUtils.convertIdn(account.name.substring(account.name.lastIndexOf("@") + 1), false)
+                );
+            } catch (Exception e) {
+                Log_OC.w(TAG, "Couldn't get display name for account, using old style");
+                accountNameTextView.setText(upload.getAccountName());
+            }
 
             TextView statusTextView = (TextView) view.findViewById(R.id.upload_status);
 
@@ -315,7 +328,7 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
             ImageButton rightButton = (ImageButton) view.findViewById(R.id.upload_right_button);
             if (upload.getUploadStatus() == UploadStatus.UPLOAD_IN_PROGRESS) {
                 //Cancel
-                rightButton.setImageResource(R.drawable.ic_cancel);
+                rightButton.setImageResource(R.drawable.ic_action_cancel_grey);
                 rightButton.setVisibility(View.VISIBLE);
                 rightButton.setOnClickListener(new OnClickListener() {
                     @Override
@@ -330,7 +343,7 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
 
             } else if (upload.getUploadStatus() == UploadStatus.UPLOAD_FAILED) {
                 //Delete
-                rightButton.setImageResource(R.drawable.ic_action_delete);
+                rightButton.setImageResource(R.drawable.ic_action_delete_grey);
                 rightButton.setVisibility(View.VISIBLE);
                 rightButton.setOnClickListener(new OnClickListener() {
                     @Override

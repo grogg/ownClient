@@ -51,7 +51,7 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
 import com.joshuaglenlee.ownclient.lib.resources.status.OwnCloudVersion;
-import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserNameOperation;
+import com.joshuaglenlee.ownclient.lib.resources.users.GetRemoteUserInfoOperation;
 import com.joshuaglenlee.ownclient.operations.CheckCurrentCredentialsOperation;
 import com.joshuaglenlee.ownclient.operations.CopyFileOperation;
 import com.joshuaglenlee.ownclient.operations.CreateFolderOperation;
@@ -71,6 +71,7 @@ import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
 
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
@@ -364,7 +365,7 @@ public class OperationsService extends Service {
             if (undispatched != null) {
                 listener.onRemoteOperationFinish(undispatched.first, undispatched.second);
                 return true;
-                //Log_OC.wtf(TAG, "Sending callback later");
+                //Log_OC.e(TAG, "Sending callback later");
             } else {
                 return (!mServiceHandler.mPendingOperations.isEmpty());
             }
@@ -379,11 +380,11 @@ public class OperationsService extends Service {
          * or waiting to download.
          * 
          * @param account       ownCloud account where the remote file is stored.
-         * @param remotePath    Path of the folder to check if something is synchronizing
+         * @param file          File to check if something is synchronizing
          *                      / downloading / uploading inside.
          */
-        public boolean isSynchronizing(Account account, String remotePath) {
-            return mSyncFolderHandler.isSynchronizing(account, remotePath);
+        public boolean isSynchronizing(Account account, OCFile file) {
+            return mSyncFolderHandler.isSynchronizing(account, file.getRemotePath());
         }
 
     }
@@ -431,7 +432,7 @@ public class OperationsService extends Service {
          */
         private void nextOperation() {
             
-            //Log_OC.wtf(TAG, "nextOperation init" );
+            //Log_OC.e(TAG, "nextOperation init" );
             
             Pair<Target, RemoteOperation> next = null;
             synchronized(mPendingOperations) {
@@ -447,8 +448,7 @@ public class OperationsService extends Service {
                     if (mLastTarget == null || !mLastTarget.equals(next.first)) {
                         mLastTarget = next.first;
                         if (mLastTarget.mAccount != null) {
-                            OwnCloudAccount ocAccount = new OwnCloudAccount(mLastTarget.mAccount,
-                                    mService);
+                            OwnCloudAccount ocAccount = new OwnCloudAccount(mLastTarget.mAccount, mService);
                             mOwnCloudClient = OwnCloudClientManagerFactory.getDefaultSingleton().
                                     getClientFor(ocAccount, mService);
 
@@ -586,8 +586,11 @@ public class OperationsService extends Service {
                                 expirationDate
                         );
 
-                        boolean publicUpload = operationIntent.getBooleanExtra(EXTRA_SHARE_PUBLIC_UPLOAD, false);
-                        ((UpdateShareViaLinkOperation) operation).setPublicUpload(publicUpload);
+                        if (operationIntent.hasExtra(EXTRA_SHARE_PUBLIC_UPLOAD)) {
+                            ((UpdateShareViaLinkOperation) operation).setPublicUpload(
+                                operationIntent.getBooleanExtra(EXTRA_SHARE_PUBLIC_UPLOAD, false)
+                            );
+                        }
 
                     } else if (shareId > 0) {
                         operation = new UpdateSharePermissionsOperation(shareId);
@@ -640,7 +643,7 @@ public class OperationsService extends Service {
 
                 } else if (action.equals(ACTION_GET_USER_NAME)) {
                     // Get User Name
-                    operation = new GetRemoteUserNameOperation();
+                    operation = new GetRemoteUserInfoOperation();
                     
                 } else if (action.equals(ACTION_RENAME)) {
                     // Rename file or folder

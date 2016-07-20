@@ -35,6 +35,7 @@ import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.datamodel.ThumbnailsCacheManager;
 import com.joshuaglenlee.ownclient.datamodel.ThumbnailsCacheManager.AsyncDrawable;
+import com.joshuaglenlee.ownclient.utils.DisplayUtils;
 import com.joshuaglenlee.ownclient.utils.MimetypeIconUtil;
 
 import java.util.HashMap;
@@ -74,9 +75,20 @@ public class UploaderAdapter extends SimpleAdapter {
         ImageView fileIcon = (ImageView) vi.findViewById(R.id.thumbnail);
         fileIcon.setTag(file.getFileId());
 
-        // TODO enable after #1277 is merged
-//        TextView lastModV = (TextView) vi.findViewById(R.id.last_mod);
-//        lastModV.setText(DisplayUtils.getRelativeTimestamp(mContext, file));
+        TextView lastModV = (TextView) vi.findViewById(R.id.last_mod);
+        lastModV.setText(DisplayUtils.getRelativeTimestamp(mContext, file.getModificationTimestamp()));
+
+        TextView fileSizeV = (TextView) vi.findViewById(R.id.file_size);
+        TextView fileSizeSeparatorV = (TextView) vi.findViewById(R.id.file_separator);
+
+        if(!file.isFolder()) {
+            fileSizeV.setVisibility(View.VISIBLE);
+            fileSizeSeparatorV.setVisibility(View.VISIBLE);
+            fileSizeV.setText(DisplayUtils.bytesToHumanReadable(file.getFileLength()));
+        } else {
+            fileSizeV.setVisibility(View.GONE);
+            fileSizeSeparatorV.setVisibility(View.GONE);
+        }
         
         // get Thumbnail if file is image
         if (file.isImage() && file.getRemoteId() != null){

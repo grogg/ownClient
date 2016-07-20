@@ -58,7 +58,7 @@
   <string name="sync_string_files">Archivos</string>
   <string name="setup_btn_connect">Conectar</string>
   <string name="uploader_btn_upload_text">Subir</string>
-  <string name="uploader_top_message">Escoger carpeta de carga:</string>
+  <string name="uploader_top_message">Elige carpeta de subida</string>
   <string name="uploader_wrn_no_account_title">No se encontró la cuenta</string>
   <string name="uploader_wrn_no_account_text">No hay %1$s cuentas en tu dispositivo. Por favor añade una cuenta primero.</string>
   <string name="uploader_wrn_no_account_setup_btn_text">Configuración</string>
@@ -223,11 +223,11 @@
 	</string>
   <string name="auth_can_not_auth_against_server">No se puedo autenticar a este servidor</string>
   <string name="auth_account_does_not_exist">Aún no existe la cuenta en el dispositivo</string>
-  <string name="favorite">Favorito</string>
-  <string name="unfavorite">No-favorito</string>
+  <string name="favorite">Marcar como disponible offline</string>
+  <string name="unfavorite">Desmarcar como disponible offline</string>
   <string name="common_rename">Renombrar</string>
   <string name="common_remove">Borrar</string>
-  <string name="confirmation_remove_alert">¿Realmente desea eliminar %1$s?</string>
+  <string name="confirmation_remove_file_alert">¿Realmente desea eliminar %1$s?</string>
   <string name="confirmation_remove_folder_alert">¿Realmente desea eliminar %1$s y todo su contenido?</string>
   <string name="confirmation_remove_local">Sólo local</string>
   <string name="remove_success_msg">Borrado correctamente</string>
@@ -412,4 +412,10 @@
   <string name="manage_space_error">No se han podido eliminar algunos archivos</string>
   <string name="permission_storage_access">Se requieren permisos adicionales para subir &amp; y descargar archivos.</string>
   <string name="local_file_not_found_toast">El archivo no se encuentra en el servidor local de archivos.</string>
+  <string name="confirmation_remove_files_alert">¿Desea realmene quitar los ítems seleccionados?</string>
+  <string name="confirmation_remove_folders_alert">¿Desea realmente quitar los ítems seleccionados y sus contenidos?</string>
+  <plurals name="items_selected_count">
+    <item quantity="one">%d seleccionado</item>
+    <item quantity="other">%d seleccionado</item>
+  </plurals>
 </resources>

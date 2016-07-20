@@ -25,7 +25,6 @@ package com.joshuaglenlee.ownclient.syncadapter;
 import java.io.IOException;
 
 import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
-import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils.AccountNotFoundException;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudAccount;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
@@ -100,7 +99,6 @@ public abstract class AbstractOwnCloudSyncAdapter extends
 
     protected void initClientForCurrentAccount() throws OperationCanceledException,
             AuthenticatorException, IOException, AccountNotFoundException {
-        AccountUtils.constructFullURLForAccount(getContext(), account);
         OwnCloudAccount ocAccount = new OwnCloudAccount(account, getContext());
         mClient = OwnCloudClientManagerFactory.getDefaultSingleton().
                 getClientFor(ocAccount, getContext());

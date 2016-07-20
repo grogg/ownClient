@@ -48,7 +48,7 @@ import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressList
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 import com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity;
-import com.joshuaglenlee.ownclient.ui.dialog.RemoveFileDialogFragment;
+import com.joshuaglenlee.ownclient.ui.dialog.RemoveFilesDialogFragment;
 import com.joshuaglenlee.ownclient.ui.dialog.RenameFileDialogFragment;
 import com.joshuaglenlee.ownclient.utils.DisplayUtils;
 import com.joshuaglenlee.ownclient.utils.MimetypeIconUtil;
@@ -255,7 +255,7 @@ public class FileDetailFragment extends FileFragment implements OnClickListener 
                 return true;
             }
             case R.id.action_remove_file: {
-                RemoveFileDialogFragment dialog = RemoveFileDialogFragment.newInstance(getFile());
+                RemoveFilesDialogFragment dialog = RemoveFilesDialogFragment.newInstance(getFile());
                 dialog.show(getFragmentManager(), FTAG_CONFIRMATION);
                 return true;
             }
@@ -293,7 +293,7 @@ public class FileDetailFragment extends FileFragment implements OnClickListener 
                 return true;
             }
             default:
-                return false;
+                return super.onOptionsItemSelected(item);
         }
     }
 
