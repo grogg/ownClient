@@ -18,15 +18,9 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-<<<<<<< HEAD
     package="com.joshuaglenlee.ownclient"
-    android:versionCode="9"
-    android:versionName="1.0.8" >
-=======
-    package="com.owncloud.android"
-    android:versionCode="20000001"
-    android:versionName="2.0.1" >
->>>>>>> 5cb87c52c8443715a6bc6d5a67b93111419d9130
+    android:versionCode="10"
+    android:versionName="1.0.9" >
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -140,13 +134,8 @@
             android:syncable="true" />
 
         <provider
-<<<<<<< HEAD
-            android:name="com.joshuaglenlee.ownclient.providers.UsersAndGroupsSearchProvider"
-            android:authorities="com.joshuaglenlee.ownclient.providers.UsersAndGroupsSearchProvider"
-=======
             android:name=".providers.UsersAndGroupsSearchProvider"
             android:authorities=".providers.UsersAndGroupsSearchProvider"
->>>>>>> 5cb87c52c8443715a6bc6d5a67b93111419d9130
             android:enabled="true"
             android:exported="false"
             android:label="@string/search_users_and_groups_hint" />
