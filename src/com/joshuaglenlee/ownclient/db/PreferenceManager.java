@@ -22,7 +22,7 @@ package com.joshuaglenlee.ownclient.db;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.owncloud.android.utils.FileStorageUtils;
+import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 /**
  * Helper to simplify reading of Preferences all around the app

@@ -123,8 +123,6 @@ android {
         exclude 'META-INF/LICENSE.txt'
     }
 
-<<<<<<< HEAD
-=======
     signingConfigs {
         release {
             if (System.env.OC_RELEASE_KEYSTORE) {
@@ -187,5 +185,4 @@ def setOutputFileName(variant, appName, callerProject) {
 
     logger.info("$variant.name: newName is $newName")
     variant.outputs[0].outputFile = new File(originalFile.parent, newName)
->>>>>>> 5cb87c52c8443715a6bc6d5a67b93111419d9130
 }
