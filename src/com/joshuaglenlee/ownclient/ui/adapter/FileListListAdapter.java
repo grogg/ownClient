@@ -6,7 +6,7 @@
  * @author David A. Velasco
  * @author masensio
  * Copyright (C) 2011  Bartek Przybylski
- * Copyright (C) 2016 ownCloud Inc.
+ * Copyright (C) 2016 ownCloud GmbH.
  * <p>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -193,12 +193,10 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
 
                     fileSizeSeparatorV.setVisibility(View.VISIBLE);
                     fileSizeV.setVisibility(View.VISIBLE);
-                    fileSizeV.setText(DisplayUtils.bytesToHumanReadable(file.getFileLength()));
+                    fileSizeV.setText(DisplayUtils.bytesToHumanReadable(
+                        file.getFileLength(), mContext
+                    ));
 
-                    if (file.isFolder()) {
-                        fileSizeSeparatorV.setVisibility(View.GONE);
-                        fileSizeV.setVisibility(View.GONE);
-                    }
 
                 case GRID_ITEM:
                     // filename
@@ -291,7 +289,7 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
 
             // this if-else is needed even though favorite icon is visible by default
             // because android reuses views in listview
-            if (!file.isFavorite()) {
+            if (file.getAvailableOfflineStatus() == OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE) {
                 view.findViewById(R.id.favoriteIcon).setVisibility(View.GONE);
             } else {
                 view.findViewById(R.id.favoriteIcon).setVisibility(View.VISIBLE);
@@ -308,7 +306,7 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
                         fileIcon.setImageBitmap(thumbnail);
                     } else {
                         // generate new Thumbnail
-                        if (ThumbnailsCacheManager.cancelPotentialWork(file, fileIcon)) {
+                        if (ThumbnailsCacheManager.cancelPotentialThumbnailWork(file, fileIcon)) {
                             final ThumbnailsCacheManager.ThumbnailGenerationTask task =
                                     new ThumbnailsCacheManager.ThumbnailGenerationTask(
                                             fileIcon, mStorageManager, mAccount
@@ -316,11 +314,11 @@ public class FileListListAdapter extends BaseAdapter implements ListAdapter {
                             if (thumbnail == null) {
                                 thumbnail = ThumbnailsCacheManager.mDefaultImg;
                             }
-                            final ThumbnailsCacheManager.AsyncDrawable asyncDrawable =
-                                    new ThumbnailsCacheManager.AsyncDrawable(
-                                            mContext.getResources(),
-                                            thumbnail,
-                                            task
+                            final ThumbnailsCacheManager.AsyncThumbnailDrawable asyncDrawable =
+                                    new ThumbnailsCacheManager.AsyncThumbnailDrawable(
+                                        mContext.getResources(),
+                                        thumbnail,
+                                        task
                                     );
                             fileIcon.setImageDrawable(asyncDrawable);
                             task.execute(file);

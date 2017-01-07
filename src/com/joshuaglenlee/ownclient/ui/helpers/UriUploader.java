@@ -1,7 +1,7 @@
 /**
  *   ownCloud Android client application
  *
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -177,8 +177,7 @@ public class UriUploader {
      */
     private void copyThenUpload(Uri[] sourceUris, String[] remotePaths) {
         if (mShowWaitingDialog) {
-            mActivity.showLoadingDialog(mActivity.getResources().
-                    getString(R.string.wait_for_tmp_copy_from_private_storage));
+            mActivity.showLoadingDialog(R.string.wait_for_tmp_copy_from_private_storage);
         }
 
         CopyAndUploadContentUrisTask copyTask = new CopyAndUploadContentUrisTask

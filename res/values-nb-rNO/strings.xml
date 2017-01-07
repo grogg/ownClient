@@ -13,12 +13,9 @@
   <string name="actionbar_send_file">Send</string>
   <string name="actionbar_sort">Sorter</string>
   <string name="actionbar_sort_title">Sorter etter</string>
-  <string-array name="actionbar_sortby">
-    <item>A-Z</item>
-    <item>Nyeste - Eldste</item>
-  </string-array>
-  <!--TODO re-enable when server-side folder size calculation is available   
-    	<item>Biggest - Smallest</item>-->
+  <string name="actionbar_sort_by_name">A-Z</string>
+  <string name="actionbar_sort_by_date">Nyest - Eldst</string>
+  <string name="actionbar_sort_by_size">Størst - Minst</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">Alle filer</string>
@@ -75,6 +72,7 @@
   <string name="file_list_loading">Laster...</string>
   <string name="file_list_no_app_for_file_type">Ingen app funnet for filtypen!</string>
   <string name="local_file_list_empty">Det er ingen filer i denne mappen.</string>
+  <string name="local_file_list_empty_just_folders">Det er ingen mapper i denne mappen.</string>
   <string name="upload_list_empty">Ingen opplastinger tilgjengelig.</string>
   <string name="file_list_folder">mappe</string>
   <string name="file_list_folders">mapper</string>
@@ -103,6 +101,7 @@
   <string name="common_loading">Laster...</string>
   <string name="common_unknown">ukjent</string>
   <string name="common_error_unknown">Ukjent feil</string>
+  <string name="common_pending">Venter</string>
   <string name="about_title">Om</string>
   <string name="change_password">Endre passord</string>
   <string name="delete_account">Fjern konto</string>
@@ -223,13 +222,14 @@
 	</string>
   <string name="auth_can_not_auth_against_server">Kan ikke autentisere mot denne serveren</string>
   <string name="auth_account_does_not_exist">Kontoen eksisterer ikke på enheten enda</string>
-  <string name="favorite">Sett som tilgjengelig frakoblet</string>
-  <string name="unfavorite">Sett som utilgjengelig frakoblet</string>
+  <string name="set_available_offline">Sett som tilgjengelig frakoblet</string>
+  <string name="unset_available_offline">Sett som utilgjengelig frakoblet</string>
   <string name="common_rename">Endre navn</string>
   <string name="common_remove">Fjern</string>
   <string name="confirmation_remove_file_alert">Vil du virkelig fjerne %1$s?</string>
   <string name="confirmation_remove_folder_alert">Vil du virkelig fjerne %1$s inkludert innholdet?</string>
   <string name="confirmation_remove_local">Kun lokalt</string>
+  <string name="confirmation_remove_account_alert">Vil du virkelig fjerne kontoen %1$s?</string>
   <string name="remove_success_msg">Fjerning var vellykket</string>
   <string name="remove_fail_msg">Fjerning mislyktes</string>
   <string name="rename_dialog_title">Skriv inn et nytt navn</string>
@@ -315,7 +315,6 @@
   <string name="network_error_socket_timeout_exception">En feil oppstod ved venting på svar fra serveren. Operasjonen kunne ikke utføres</string>
   <string name="network_error_connect_timeout_exception">En feil oppstod ved venting på svar fra serveren. Operasjonen kunne ikke utføres</string>
   <string name="network_host_not_available">Operasjonen kunne ikke fullføres. Server utilgjengelig</string>
-  <string name="empty"></string>
   <string name="forbidden_permissions">Du har ikke tillatelse til %s</string>
   <string name="forbidden_permissions_rename">å omdøpe denne filen</string>
   <string name="forbidden_permissions_delete">å slette denne filen</string>
@@ -327,6 +326,7 @@
   <string name="downloader_download_file_not_found">Filen finnes ikke på serveren lenger</string>
   <string name="prefs_category_accounts">Kontoer</string>
   <string name="prefs_add_account">Legg til en konto</string>
+  <string name="drawer_manage_accounts">Håndter kontoer</string>
   <string name="auth_redirect_non_secure_connection_title">Sikker tilkobling videresendes gjennom en usikker rute.</string>
   <string name="actionbar_logger">Logger</string>
   <string name="log_send_history_button">Send historik</string>
@@ -368,6 +368,9 @@
   <string name="file_list__footer__files">%1$d filer</string>
   <string name="file_list__footer__files_and_folder">%1$d filer, 1 mappe</string>
   <string name="file_list__footer__files_and_folders">%1$d filer, %2$d mapper</string>
+  <string name="prefs_instant_upload_source_path_title">Kamera-mappe (%1$s)</string>
+  <string name="prefs_instant_upload_source_path_title_required">obligatorisk</string>
+  <string name="prefs_instant_upload_source_path_title_optional">valgfri</string>
   <string name="prefs_instant_behaviour_dialogTitle">Opprinnelig fil vil bli...</string>
   <string name="prefs_instant_behaviour_title">Opprinnelig fil vil bli...</string>
   <string name="upload_copy_files">Kopier fil</string>
@@ -413,4 +416,10 @@
   <string name="manage_space_error">Noen filer kunne ikke fjernes.</string>
   <string name="permission_storage_access">Flere tillatelser trengs for å laste opp &amp; ned filer.</string>
   <string name="local_file_not_found_toast">Filen ble ikke funnet i det lokale filsystemet</string>
+  <string name="confirmation_remove_files_alert">Vil du virkelig fjerne de valgte elementene?</string>
+  <string name="confirmation_remove_folders_alert">Vil du virkelig fjerne de valgte elementene og innholdet i dem?</string>
+  <plurals name="items_selected_count">
+    <item quantity="one">%d valgt</item>
+    <item quantity="other">%d valgte</item>
+  </plurals>
 </resources>

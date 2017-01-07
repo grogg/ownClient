@@ -6,7 +6,7 @@
  *  @author Juan Carlos González Cabrero
  *  @author David A. Velasco
  *  Copyright (C) 2012  Bartek Przybylski
- *  Copyright (C) 2016 ownCloud Inc.
+ *  Copyright (C) 2016 ownCloud GmbH.
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License version 2,
@@ -65,8 +65,9 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.R
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.CreateFolderOperation;
 import com.joshuaglenlee.ownclient.operations.RefreshFolderOperation;
+import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
 import com.joshuaglenlee.ownclient.syncadapter.FileSyncAdapter;
-import com.joshuaglenlee.ownclient.ui.adapter.UploaderAdapter;
+import com.joshuaglenlee.ownclient.ui.adapter.ReceiveExternalFilesAdapter;
 import com.joshuaglenlee.ownclient.ui.dialog.ConfirmationDialogFragment;
 import com.joshuaglenlee.ownclient.ui.dialog.CreateFolderDialogFragment;
 import com.joshuaglenlee.ownclient.ui.asynctasks.CopyAndUploadContentUrisTask;
@@ -77,9 +78,6 @@ import com.joshuaglenlee.ownclient.utils.ErrorMessageAdapter;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Stack;
 import java.util.Vector;
 
@@ -392,9 +390,10 @@ public class ReceiveExternalFilesActivity extends FileActivity
 
     private void populateDirectoryList() {
         setContentView(R.layout.uploader_layout);
+        setupToolbar();
+        ActionBar actionBar = getSupportActionBar();
 
         ListView mListView = (ListView) findViewById(android.R.id.list);
-        ActionBar actionBar = getSupportActionBar();
 
         String current_dir = mParents.peek();
         if (current_dir.equals("")) {
@@ -418,21 +417,11 @@ public class ReceiveExternalFilesActivity extends FileActivity
             Vector<OCFile> files = getStorageManager().getFolderContent(mFile/*, false*/);
             files = sortFileList(files);
 
-            List<HashMap<String, Object>> data = new LinkedList<>();
-            for (OCFile f : files) {
-                HashMap<String, Object> h = new HashMap<>();
-                h.put("dirname", f);
-                data.add(h);
-            }
-
-            UploaderAdapter sa = new UploaderAdapter(this,
-                                                data,
-                                                R.layout.uploader_list_item_layout,
-                                                new String[] {"dirname"},
-                                                new int[] {R.id.filename},
-                                                getStorageManager(), getAccount());
-
+            ReceiveExternalFilesAdapter sa = new ReceiveExternalFilesAdapter(
+                this, files, getStorageManager(), getAccount()
+            );
             mListView.setAdapter(sa);
+
             Button btnChooseFolder = (Button) findViewById(R.id.uploader_choose_folder);
             btnChooseFolder.setOnClickListener(this);
 
@@ -449,21 +438,18 @@ public class ReceiveExternalFilesActivity extends FileActivity
     }
 
     private void startSyncFolderOperation(OCFile folder) {
-        long currentSyncTime = System.currentTimeMillis();
 
         mSyncInProgress = true;
 
         // perform folder synchronization
-        RemoteOperation synchFolderOp = new RefreshFolderOperation( folder,
-                                                                        currentSyncTime,
-                                                                        false,
-                                                                        false,
-                                                                        false,
-                                                                        getStorageManager(),
-                                                                        getAccount(),
-                                                                        getApplicationContext()
-                                                                      );
-        synchFolderOp.execute(getAccount(), this, null, null);
+        SyncOperation synchFolderOp = new RefreshFolderOperation(
+            folder,
+            getFileOperationsHelper().isSharedSupported(),
+            false,
+            getAccount(),
+            getApplicationContext()
+        );
+        synchFolderOp.execute(getStorageManager(), this, null, null);
     }
 
     private Vector<OCFile> sortFileList(Vector<OCFile> files) {

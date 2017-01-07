@@ -5,7 +5,7 @@
  *   @author David A. Velasco
  *   @author masensio
  *   Copyright (C) 2012  Bartek Przybylski
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -51,6 +51,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.webkit.HttpAuthHandler;
 import android.webkit.SslErrorHandler;
@@ -62,6 +63,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.joshuaglenlee.ownclient.BuildConfig;
 import com.joshuaglenlee.ownclient.MainApp;
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.authentication.SsoWebViewClient.SsoWebViewClientListener;
@@ -87,7 +89,7 @@ import com.joshuaglenlee.ownclient.operations.OAuth2GetAccessToken;
 import com.joshuaglenlee.ownclient.services.OperationsService;
 import com.joshuaglenlee.ownclient.services.OperationsService.OperationsServiceBinder;
 import com.joshuaglenlee.ownclient.ui.dialog.CredentialsDialogFragment;
-import com.joshuaglenlee.ownclient.ui.dialog.IndeterminateProgressDialog;
+import com.joshuaglenlee.ownclient.ui.dialog.LoadingDialog;
 import com.joshuaglenlee.ownclient.ui.dialog.SamlWebViewDialog;
 import com.joshuaglenlee.ownclient.ui.dialog.SslUntrustedCertDialog;
 import com.joshuaglenlee.ownclient.ui.dialog.SslUntrustedCertDialog.OnSslUntrustedCertListener;
@@ -209,6 +211,11 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         //Log_OC.e(TAG,  "onCreate init");
         super.onCreate(savedInstanceState);
 
+        /// protection against screen recording
+        if (!BuildConfig.DEBUG) {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);
+        } // else, let it go, or taking screenshots & testing will not be possible
+
         // Workaround, for fixing a problem with Android Library Suppor v7 19
         //getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         if (getSupportActionBar() != null) {
@@ -247,10 +254,10 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
             mWaitingForOpId = savedInstanceState.getLong(KEY_WAITING_FOR_OP_ID);
             mIsFirstAuthAttempt = savedInstanceState.getBoolean(KEY_AUTH_IS_FIRST_ATTEMPT_TAG);
         }
-        
+
         /// load user interface
         setContentView(R.layout.account_setup);
-        
+
         /// initialize general UI elements
         initOverallUi();
 
@@ -632,7 +639,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         outState.putBoolean(KEY_AUTH_IS_FIRST_ATTEMPT_TAG, mIsFirstAuthAttempt);
 
         /// AsyncTask (User and password)
-        outState.putString(KEY_USERNAME, mUsernameInput.getText().toString());
+        outState.putString(KEY_USERNAME, mUsernameInput.getText().toString().trim());
         outState.putString(KEY_PASSWORD, mPasswordInput.getText().toString());
 
         if (mAsyncTask != null) {
@@ -658,7 +665,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
             OwnCloudCredentials credentials = null;
             if (BASIC_TOKEN_TYPE.equals(mAuthTokenType)) {
-                credentials = OwnCloudCredentialsFactory.newBasicCredentials(username, password);
+                String version = savedInstanceState.getString(KEY_OC_VERSION);
+                OwnCloudVersion ocVersion = (version != null) ? new OwnCloudVersion(version) : null;
+                credentials = OwnCloudCredentialsFactory.newBasicCredentials(
+                    username,
+                    password,
+                    (ocVersion != null && ocVersion.isSessionMonitoringSupported())
+                );
 
             } else if (OAUTH_TOKEN_TYPE.equals(mAuthTokenType)) {
                 credentials = OwnCloudCredentialsFactory.newBearerCredentials(mAuthToken);
@@ -743,8 +756,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mNewCapturedUriFromOAuth2Redirection = null;
 
         /// Showing the dialog with instructions for the user.
-        IndeterminateProgressDialog dialog = 
-                IndeterminateProgressDialog.newInstance(R.string.auth_getting_authorization, true);
+        LoadingDialog dialog = LoadingDialog.newInstance(R.string.auth_getting_authorization, true);
         dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
         /// GET ACCESS TOKEN to the oAuth server
@@ -886,14 +898,18 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
     private void showPassword() {
         mPasswordInput.setInputType(
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                InputType.TYPE_CLASS_TEXT |
+                InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD |
+                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         );
         showViewPasswordButton();
     }
 
     private void hidePassword() {
         mPasswordInput.setInputType(
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD
+                InputType.TYPE_CLASS_TEXT |
+                InputType.TYPE_TEXT_VARIATION_PASSWORD |
+                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
         );
         showViewPasswordButton();
     }
@@ -944,17 +960,22 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
      */
     private void checkBasicAuthorization() {
         /// get basic credentials entered by user
-        String username = mUsernameInput.getText().toString();
+        String username = mUsernameInput.getText().toString().trim();
         String password = mPasswordInput.getText().toString();
 
         /// be gentle with the user
-        IndeterminateProgressDialog dialog = 
-                IndeterminateProgressDialog.newInstance(R.string.auth_trying_to_login, true);
+        LoadingDialog dialog = LoadingDialog.newInstance(R.string.auth_trying_to_login, true);
         dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
         /// validate credentials accessing the root folder
-        OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(username,
-                password);
+        OwnCloudCredentials credentials = OwnCloudCredentialsFactory.newBasicCredentials(
+            username,
+            password,
+            (mServerInfo != null &&
+                mServerInfo.mVersion != null &&
+                mServerInfo.mVersion.isSessionMonitoringSupported()
+            )
+        );
         accessRootFolder(credentials);
     }
 
@@ -1041,19 +1062,13 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         mWaitingForOpId = Long.MAX_VALUE;
         if (result.isSuccess()) {
             boolean success = false;
-            String username;
-            if (result.getData().get(0) instanceof UserInfo) {
-                username = ((UserInfo) result.getData().get(0)).mDisplayName;
-            } else {
-                username = (String) result.getData().get(0);
-            }
-
+            String username = ((UserInfo) result.getData().get(0)).mDisplayName;
             if ( mAction == ACTION_CREATE) {
                 mUsernameInput.setText(username);
                 success = createAccount(result);
             } else {
 
-                if (!mUsernameInput.getText().toString().equals(username)) {
+                if (!mUsernameInput.getText().toString().trim().equals(username)) {
                     // fail - not a new account, but an existing one; disallow
                     result = new RemoteOperationResult(ResultCode.ACCOUNT_NOT_THE_SAME);
                     mAuthToken = "";
@@ -1376,8 +1391,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         if (result.isSuccess()) {
             /// be gentle with the user
-            IndeterminateProgressDialog dialog = 
-                    IndeterminateProgressDialog.newInstance(R.string.auth_trying_to_login, true);
+            LoadingDialog dialog = LoadingDialog.newInstance(R.string.auth_trying_to_login, true);
             dialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
 
             /// time to test the retrieved access token on the ownCloud server

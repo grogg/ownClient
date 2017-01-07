@@ -3,7 +3,7 @@
  *
  *   @author David A. Velasco
  *   @author masensio
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -24,6 +24,7 @@ package com.joshuaglenlee.ownclient.operations;
 import java.io.File;
 import java.io.IOException;
 
+import com.joshuaglenlee.ownclient.MainApp;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
@@ -31,6 +32,7 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.R
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.files.RenameRemoteFileOperation;
 import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
+import com.joshuaglenlee.ownclient.services.observer.FileObserverService;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 
@@ -102,8 +104,7 @@ public class RenameFileOperation extends SyncOperation {
 
             if (result.isSuccess()) {
                 if (mFile.isFolder()) {
-                    getStorageManager().moveLocalFile(mFile, mNewRemotePath, parent);
-                    //saveLocalDirectory();
+                    saveLocalDirectory(parent);
 
                 } else {
                     saveLocalFile();
@@ -119,11 +120,37 @@ public class RenameFileOperation extends SyncOperation {
         return result;
     }
 
+    private void saveLocalDirectory(String parent) {
+        // stop observing changes if available offline
+        boolean isAvailableOffline =
+            (mFile.getAvailableOfflineStatus() == OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE);
+            // OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT requires no action
+        if (isAvailableOffline) {
+            pauseObservation();
+        }
+
+        getStorageManager().moveLocalFile(mFile, mNewRemotePath, parent);
+        mFile.setFileName(mNewName);
+
+        // resume observation of file after rename
+        if (isAvailableOffline) {
+            resumeObservation();
+        }
+    }
+
     private void saveLocalFile() {
         mFile.setFileName(mNewName);
 
-        // try to rename the local copy of the file
         if (mFile.isDown()) {
+            // stop observing changes if available offline
+            boolean isAvailableOffline =
+                mFile.getAvailableOfflineStatus() == OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE;
+                // OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT requires no action
+            if (isAvailableOffline) {
+                pauseObservation();
+            }
+
+            // rename the local copy of the file
             String oldPath = mFile.getStoragePath();
             File f = new File(oldPath);
             String parentStoragePath = f.getParent();
@@ -132,6 +159,11 @@ public class RenameFileOperation extends SyncOperation {
             if (f.renameTo(new File(parentStoragePath + mNewName))) {
                 String newPath = parentStoragePath + mNewName;
                 mFile.setStoragePath(newPath);
+
+                // resume observation of file after rename
+                if (isAvailableOffline) {
+                    resumeObservation();
+                }
 
                 // notify MediaScanner about removed file
                 getStorageManager().deleteFileInMediaScan(oldPath);
@@ -144,6 +176,24 @@ public class RenameFileOperation extends SyncOperation {
         }
         
         getStorageManager().saveFile(mFile);
+    }
+
+    private void pauseObservation() {
+        FileObserverService.observeFile(
+            MainApp.getAppContext(),
+            mFile,
+            getStorageManager().getAccount(),
+            false
+        );
+    }
+
+    private void resumeObservation() {
+        FileObserverService.observeFile(
+            MainApp.getAppContext(),
+            mFile,
+            getStorageManager().getAccount(),
+            true
+        );
     }
 
     /**

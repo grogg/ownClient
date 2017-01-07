@@ -3,7 +3,7 @@
   ownCloud Android client application
 
   Copyright (C) 2012  Bartek Przybylski
-  Copyright (C) 2012-2015 ownCloud Inc.
+  Copyright (C) 2016 ownCloud GmbH.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2,
@@ -19,12 +19,12 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.joshuaglenlee.ownclient"
-    android:versionCode="10"
-    android:versionName="1.0.9" >
+    android:versionCode="11"
+    android:versionName="1.1.0" >
 
     <uses-sdk
         android:minSdkVersion="14"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="24" />
 
     <!-- GET_ACCOUNTS is needed for API < 23.
         For API >= 23 results in the addition of CONTACTS group to the list of permissions that may be
@@ -56,25 +56,27 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name="com.joshuaglenlee.ownclient.MainApp"
+        android:name=".MainApp"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:theme="@style/Theme.ownCloud"
-        android:manageSpaceActivity=".ui.activity.ManageSpaceActivity">
+        android:theme="@style/Theme.ownCloud.Toolbar"
+        android:manageSpaceActivity=".ui.activity.ManageSpaceActivity"
+        android:resizeableActivity="true"
+        android:supportsPictureInPicture="false" >
         <activity
-            android:name="com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity"
-            android:label="@string/app_name" >
+            android:name=".ui.activity.FileDisplayActivity"
+            android:theme="@style/Theme.ownCloud.Toolbar.Drawer">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activity.ManageAccountsActivity" />
         <activity android:name=".ui.activity.UploadFilesActivity" />
         <activity android:name=".ui.activity.ReceiveExternalFilesActivity"
                   android:taskAffinity=""
-                  android:excludeFromRecents="true"
-                  android:theme="@style/Theme.ownCloud">
+                  android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
 
@@ -97,10 +99,8 @@
         <activity
             android:name="com.joshuaglenlee.ownclient.ui.preview.PreviewImageActivity"
             android:theme="@style/Theme.ownCloud.Overlay" />
-        <activity
-            android:name="com.joshuaglenlee.ownclient.ui.preview.PreviewVideoActivity"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.ownCloud.Fullscreen" />
+        <activity android:name=".ui.preview.PreviewVideoActivity"
+                  android:theme="@style/Theme.ownCloud.Fullscreen" />
 
         <service
             android:name="com.joshuaglenlee.ownclient.authentication.AccountAuthenticatorService"
@@ -135,7 +135,7 @@
 
         <provider
             android:name=".providers.UsersAndGroupsSearchProvider"
-            android:authorities=".providers.UsersAndGroupsSearchProvider"
+            android:authorities="@string/search_suggest_authority"
             android:enabled="true"
             android:exported="false"
             android:label="@string/search_users_and_groups_hint" />
@@ -152,11 +152,22 @@
             </intent-filter>
         </provider>
 
+        <!-- new provider used to generate URIs without file:// scheme (forbidden from Android 7) -->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="@string/file_provider_authority"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/exposed_filepaths" />
+        </provider>
+
         <activity
             android:name="com.joshuaglenlee.ownclient.authentication.AuthenticatorActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.ownCloud.noActionBar" >
+            >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -177,42 +188,42 @@
         <service android:name="com.joshuaglenlee.ownclient.files.services.FileUploader" />
         <service android:name="com.joshuaglenlee.ownclient.media.MediaService" />
 
-        <activity android:name=".ui.activity.PassCodeActivity" />
-        <activity android:name=".ui.activity.ConflictsResolveActivity"/>
+        <activity android:name=".ui.activity.PassCodeActivity"
+            android:theme="@style/Theme.ownCloud"/>
+        <activity android:name=".ui.activity.ConflictsResolveActivity"
+            android:theme="@style/Theme.ownCloud"/>
         <activity android:name=".ui.activity.GenericExplanationActivity"/>
-        <activity android:name=".ui.activity.ErrorsWhileCopyingHandlerActivity"/>
+        <activity android:name=".ui.activity.ErrorsWhileCopyingHandlerActivity"
+            android:theme="@style/Theme.ownCloud"/>
         
         <activity android:name=".ui.activity.LogHistoryActivity"/>
 
         <activity android:name=".ui.errorhandling.ErrorShowActivity" />
-        <activity android:name=".ui.activity.UploadListActivity" />
+        <activity android:name=".ui.activity.UploadListActivity"
+                  android:theme="@style/Theme.ownCloud.Toolbar.Drawer"/>
         
-        <receiver android:name=".files.services.ConnectivityActionReceiver"
-		    android:enabled="true" android:label="ConnectivityActionReceiver">
-		    <intent-filter>
-		        <!--action android:name="android.net.conn.CONNECTIVITY_CHANGE"/-->
-		        <action android:name="android.net.wifi.STATE_CHANGE"/>
-		    </intent-filter>
-		</receiver>
-		<receiver android:name=".files.InstantUploadBroadcastReceiver">
+        <receiver android:name=".broadcastreceivers.ConnectivityActionReceiver"
+            android:enabled="true" android:label="ConnectivityActionReceiver">
             <intent-filter>
+                <!--action android:name="android.net.conn.CONNECTIVITY_CHANGE"/-->
+                <action android:name="android.net.wifi.STATE_CHANGE"/>
+            </intent-filter>
+        </receiver>
 
-                <!-- unofficially supported by many Android phones but not by HTC devices: -->
-                <action android:name="com.android.camera.NEW_PICTURE" />
-                <!-- officially supported since Android 4.0 (SDK 14, works even for HTC devices): -->
+        <receiver android:name=".broadcastreceivers.BootupBroadcastReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".broadcastreceivers.InstantUploadBroadcastReceiver">
+            <intent-filter>
                 <action android:name="android.hardware.action.NEW_PICTURE" />
-
                 <data android:mimeType="image/*" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.hardware.action.NEW_VIDEO" />
-
                 <data android:mimeType="video/*" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.joshuaglenlee.ownclient.files.BootupBroadcastReceiver" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
@@ -222,16 +233,13 @@
             android:name="com.joshuaglenlee.ownclient.ui.activity.CopyToClipboardActivity"
             android:icon="@drawable/copy_link"
             android:label="@string/copy_link" />
-        <activity
-            android:name="com.joshuaglenlee.ownclient.ui.activity.FolderPickerActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name="com.joshuaglenlee.ownclient.ui.activity.UploadPathActivity"
-            android:label="@string/app_name" />
+        <activity android:name=".ui.activity.FolderPickerActivity" />
+        <activity android:name=".ui.activity.LocalFolderPickerActivity" />
+        <activity android:name=".ui.activity.UploadPathActivity" />
         <activity
             android:name="com.joshuaglenlee.ownclient.ui.activity.ShareActivity"
             android:label="@string/share_dialog_title"
-            android:theme="@style/Theme.ownCloud.Dialog.NoTitle"
+            android:theme="@style/Theme.ownCloud.AlertDialog.NoTitle"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustResize" >
             <intent-filter>

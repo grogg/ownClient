@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   Copyright (C) 2012  Bartek Przybylski
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -33,8 +33,10 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.RemoteException;
 import android.provider.MediaStore;
+import android.support.v4.util.Pair;
 
 import com.joshuaglenlee.ownclient.MainApp;
+import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.db.ProviderMeta.ProviderTableMeta;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
@@ -102,10 +104,12 @@ public class FileDataStorageManager {
     public OCFile getFileByPath(String path) {
         Cursor c = getFileCursorForValue(ProviderTableMeta.FILE_PATH, path);
         OCFile file = null;
-        if (c.moveToFirst()) {
-            file = createFileInstance(c);
+        if (c!= null) {
+            if (c.moveToFirst()) {
+                file = createFileInstance(c);
+            }
+            c.close();
         }
-        c.close();
         if (file == null && OCFile.ROOT_PATH.equals(path)) {
             return createRootDir(); // root should always exist
         }
@@ -116,20 +120,24 @@ public class FileDataStorageManager {
     public OCFile getFileById(long id) {
         Cursor c = getFileCursorForValue(ProviderTableMeta._ID, String.valueOf(id));
         OCFile file = null;
-        if (c.moveToFirst()) {
-            file = createFileInstance(c);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                file = createFileInstance(c);
+            }
+            c.close();
         }
-        c.close();
         return file;
     }
 
     public OCFile getFileByLocalPath(String path) {
         Cursor c = getFileCursorForValue(ProviderTableMeta.FILE_STORAGE_PATH, path);
         OCFile file = null;
-        if (c.moveToFirst()) {
-            file = createFileInstance(c);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                file = createFileInstance(c);
+            }
+            c.close();
         }
-        c.close();
         return file;
     }
 
@@ -189,8 +197,8 @@ public class FileDataStorageManager {
         cv.put(ProviderTableMeta.FILE_ACCOUNT_OWNER, mAccount.name);
         cv.put(ProviderTableMeta.FILE_LAST_SYNC_DATE, file.getLastSyncDateForProperties());
         cv.put(ProviderTableMeta.FILE_LAST_SYNC_DATE_FOR_DATA, file.getLastSyncDateForData());
-        cv.put(ProviderTableMeta.FILE_KEEP_IN_SYNC, file.isFavorite() ? 1 : 0);
         cv.put(ProviderTableMeta.FILE_ETAG, file.getEtag());
+        cv.put(ProviderTableMeta.FILE_TREE_ETAG, file.getTreeEtag());
         cv.put(ProviderTableMeta.FILE_SHARED_VIA_LINK, file.isSharedViaLink() ? 1 : 0);
         cv.put(ProviderTableMeta.FILE_SHARED_WITH_SHAREE, file.isSharedWithSharee() ? 1 : 0);
         cv.put(ProviderTableMeta.FILE_PUBLIC_LINK, file.getPublicLink());
@@ -228,7 +236,12 @@ public class FileDataStorageManager {
                                     + e.getMessage());
                 }
             }
+
         } else {
+            // new file
+
+            setInitialAvailableOfflineStatus(file, cv);
+
             Uri result_uri = null;
             if (getContentResolver() != null) {
                 result_uri = getContentResolver().insert(
@@ -252,21 +265,6 @@ public class FileDataStorageManager {
 
         return overriden;
     }
-
-
-    public void saveNewFile(OCFile newFile) {
-        String remoteParentPath = new File(newFile.getRemotePath()).getParent();
-        remoteParentPath = remoteParentPath.endsWith(OCFile.PATH_SEPARATOR) ?
-                remoteParentPath : remoteParentPath + OCFile.PATH_SEPARATOR;
-        OCFile parent = getFileByPath(remoteParentPath);
-        if (parent != null) {
-            newFile.setParentId(parent.getFileId());
-            saveFile(newFile);
-        } else {
-            throw new IllegalArgumentException("Saving a new file in an unexisting folder");
-        }
-    }
-
 
     /**
      * Inserts or updates the list of files contained in a given folder.
@@ -300,7 +298,6 @@ public class FileDataStorageManager {
             cv.put(ProviderTableMeta.FILE_CONTENT_LENGTH, file.getFileLength());
             cv.put(ProviderTableMeta.FILE_CONTENT_TYPE, file.getMimetype());
             cv.put(ProviderTableMeta.FILE_NAME, file.getFileName());
-            //cv.put(ProviderTableMeta.FILE_PARENT, file.getParentId());
             cv.put(ProviderTableMeta.FILE_PARENT, folder.getFileId());
             cv.put(ProviderTableMeta.FILE_PATH, file.getRemotePath());
             if (!file.isFolder()) {
@@ -309,8 +306,8 @@ public class FileDataStorageManager {
             cv.put(ProviderTableMeta.FILE_ACCOUNT_OWNER, mAccount.name);
             cv.put(ProviderTableMeta.FILE_LAST_SYNC_DATE, file.getLastSyncDateForProperties());
             cv.put(ProviderTableMeta.FILE_LAST_SYNC_DATE_FOR_DATA, file.getLastSyncDateForData());
-            cv.put(ProviderTableMeta.FILE_KEEP_IN_SYNC, file.isFavorite() ? 1 : 0);
             cv.put(ProviderTableMeta.FILE_ETAG, file.getEtag());
+            cv.put(ProviderTableMeta.FILE_TREE_ETAG, file.getTreeEtag());
             cv.put(ProviderTableMeta.FILE_SHARED_VIA_LINK, file.isSharedViaLink() ? 1 : 0);
             cv.put(ProviderTableMeta.FILE_SHARED_WITH_SHAREE, file.isSharedWithSharee() ? 1 : 0);
             cv.put(ProviderTableMeta.FILE_PUBLIC_LINK, file.getPublicLink());
@@ -331,6 +328,7 @@ public class FileDataStorageManager {
 
             } else {
                 // adding a new file
+                setInitialAvailableOfflineStatus(file, cv);
                 operations.add(ContentProviderOperation.newInsert(ProviderTableMeta.CONTENT_URI).
                         withValues(cv).build());
             }
@@ -379,7 +377,7 @@ public class FileDataStorageManager {
                 folder.getModificationTimestampAtLastSyncForData()
         );
         cv.put(ProviderTableMeta.FILE_CREATION, folder.getCreationTimestamp());
-        cv.put(ProviderTableMeta.FILE_CONTENT_LENGTH, 0);
+        cv.put(ProviderTableMeta.FILE_CONTENT_LENGTH, folder.getFileLength());
         cv.put(ProviderTableMeta.FILE_CONTENT_TYPE, folder.getMimetype());
         cv.put(ProviderTableMeta.FILE_NAME, folder.getFileName());
         cv.put(ProviderTableMeta.FILE_PARENT, folder.getParentId());
@@ -387,8 +385,8 @@ public class FileDataStorageManager {
         cv.put(ProviderTableMeta.FILE_ACCOUNT_OWNER, mAccount.name);
         cv.put(ProviderTableMeta.FILE_LAST_SYNC_DATE, folder.getLastSyncDateForProperties());
         cv.put(ProviderTableMeta.FILE_LAST_SYNC_DATE_FOR_DATA, folder.getLastSyncDateForData());
-        cv.put(ProviderTableMeta.FILE_KEEP_IN_SYNC, folder.isFavorite() ? 1 : 0);
         cv.put(ProviderTableMeta.FILE_ETAG, folder.getEtag());
+        cv.put(ProviderTableMeta.FILE_TREE_ETAG, folder.getTreeEtag());
         cv.put(ProviderTableMeta.FILE_SHARED_VIA_LINK, folder.isSharedViaLink() ? 1 : 0);
         cv.put(ProviderTableMeta.FILE_SHARED_WITH_SHAREE, folder.isSharedWithSharee() ? 1 : 0);
         cv.put(ProviderTableMeta.FILE_PUBLIC_LINK, folder.getPublicLink());
@@ -442,6 +440,124 @@ public class FileDataStorageManager {
 
     }
 
+    /**
+     * Adds the appropriate initial value for ProviderTableMeta.FILE_KEEP_IN_SYNC to
+     * passed {@link ContentValues} instance.
+     *
+     * @param file      {@link OCFile} which av-offline property will be set.
+     * @param cv        {@link ContentValues} instance where the property is added.
+     */
+    private void setInitialAvailableOfflineStatus(OCFile file, ContentValues cv) {
+        // set appropriate av-off folder depending on ancestor
+        boolean inFolderAvailableOffline = isAnyAncestorAvailableOfflineFolder(file);
+        if (inFolderAvailableOffline) {
+            cv.put(
+                ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT.getValue()
+            );
+        } else {
+            cv.put(
+                ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE.getValue()
+            );
+        }
+    }
+
+    /**
+     * Updates available-offline status of OCFile received as a parameter, with its current value.
+     *
+     * Saves the new value property for the given file in persistent storage.
+     *
+     * If the file is a folder, updates the value of all its known descendants accordingly.
+     *
+     * @param   file                        File which available-offline status will be updated.
+     * @return                              'true' if value was updated, 'false' otherwise.
+     * @throws IllegalArgumentException     If file is set to
+     *                                      OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT.
+     */
+    public boolean saveLocalAvailableOfflineStatus(OCFile file) {
+        if (!fileExists(file.getFileId())) {
+            return false;
+        }
+
+        OCFile.AvailableOfflineStatus newStatus = file.getAvailableOfflineStatus();
+        if (OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT == newStatus) {
+            throw new IllegalArgumentException(
+                "Forbidden value, AVAILABLE_OFFLINE_PARENT is calculated, cannot be set"
+            );
+        }
+
+        ContentValues cv = new ContentValues();
+        cv.put(ProviderTableMeta.FILE_KEEP_IN_SYNC, file.getAvailableOfflineStatus().getValue());
+
+        int updatedCount;
+        if (getContentResolver() != null) {
+            updatedCount = getContentResolver().update(
+                ProviderTableMeta.CONTENT_URI,
+                cv,
+                ProviderTableMeta._ID + "=?",
+                new String[]{String.valueOf(file.getFileId())}
+            );
+
+            // Update descendants
+            if (file.isFolder() && updatedCount > 0) {
+                ContentValues descendantsCv = new ContentValues();
+                if (newStatus == OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE) {
+                    // all descendant files MUST be av-off due to inheritance, not due to previous value
+                    descendantsCv.put(
+                        ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                        OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT.getValue()
+                    );
+                } else {
+                    // all descendant files MUST be not-available offline
+                    descendantsCv.put(
+                        ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                        OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE.getValue()
+                    );
+                }
+                Pair<String, String[]> selectDescendants = selectionForAllDescendantsOf(file);
+                updatedCount += getContentResolver().update(
+                    ProviderTableMeta.CONTENT_URI,
+                    descendantsCv,
+                    selectDescendants.first,
+                    selectDescendants.second
+                );
+            }
+
+        } else {
+            try {
+                updatedCount = getContentProviderClient().update(
+                    ProviderTableMeta.CONTENT_URI,
+                    cv,
+                    ProviderTableMeta._ID + "=?",
+                    new String[]{String.valueOf(file.getFileId())}
+                );
+
+                // If file is a folder, all children files that were available offline must be unset
+                if (file.isFolder() && updatedCount > 0) {
+                    ContentValues descendantsCv = new ContentValues();
+                    descendantsCv.put(
+                        ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                        OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE.getValue()
+                    );
+                    Pair<String, String[]> selectDescendants = selectionForAllDescendantsOf(file);
+                    updatedCount += getContentProviderClient().update(
+                        ProviderTableMeta.CONTENT_URI,
+                        descendantsCv,
+                        selectDescendants.first,
+                        selectDescendants.second
+                    );
+                }
+
+
+            } catch (RemoteException e) {
+                Log_OC.e(TAG,"Fail updating available offline status", e);
+                return false;
+            }
+        }
+
+        return (updatedCount > 0);
+    }
 
     public boolean removeFile(OCFile file, boolean removeDBData, boolean removeLocalCopy) {
         boolean success = true;
@@ -451,8 +567,6 @@ public class FileDataStorageManager {
 
             } else {
                 if (removeDBData) {
-                    //Uri file_uri = Uri.withAppendedPath(ProviderTableMeta.CONTENT_URI_FILE,
-                    // ""+file.getFileId());
                     Uri file_uri = ContentUris.withAppendedId(ProviderTableMeta.CONTENT_URI_FILE,
                             file.getFileId());
                     String where = ProviderTableMeta.FILE_ACCOUNT_OWNER + "=?" + " AND " +
@@ -624,68 +738,90 @@ public class FileDataStorageManager {
                 );
             }
 
-            /// 2. prepare a batch of update operations to change all the descendants
-            ArrayList<ContentProviderOperation> operations =
-                    new ArrayList<ContentProviderOperation>(c.getCount());
+            List<String> originalPathsToTriggerMediaScan = new ArrayList<>();
+            List<String> newPathsToTriggerMediaScan = new ArrayList<>();
             String defaultSavePath = FileStorageUtils.getSavePath(mAccount.name);
-            List<String> originalPathsToTriggerMediaScan = new ArrayList<String>();
-            List<String> newPathsToTriggerMediaScan = new ArrayList<String>();
-            if (c.moveToFirst()) {
-                int lengthOfOldPath = file.getRemotePath().length();
-                int lengthOfOldStoragePath = defaultSavePath.length() + lengthOfOldPath;
-                do {
-                    ContentValues cv = new ContentValues(); // keep construction in the loop
-                    OCFile child = createFileInstance(c);
-                    cv.put(
+
+            /// 2. prepare a batch of update operations to change all the descendants
+            if (c != null) {
+                ArrayList<ContentProviderOperation> operations =
+                    new ArrayList<>(c.getCount());
+                if (c.moveToFirst()) {
+                    int lengthOfOldPath = file.getRemotePath().length();
+                    int lengthOfOldStoragePath = defaultSavePath.length() + lengthOfOldPath;
+                    do {
+                        ContentValues cv = new ContentValues(); // keep construction in the loop
+                        OCFile child = createFileInstance(c);
+                        cv.put(
                             ProviderTableMeta.FILE_PATH,
                             targetPath + child.getRemotePath().substring(lengthOfOldPath)
-                    );
-                    if (child.getStoragePath() != null &&
+                        );
+                        if (child.getStoragePath() != null &&
                             child.getStoragePath().startsWith(defaultSavePath)) {
-                        // update link to downloaded content - but local move is not done here!
-                        String targetLocalPath = defaultSavePath + targetPath +
+                            // update link to downloaded content - but local move is not done here!
+                            String targetLocalPath = defaultSavePath + targetPath +
                                 child.getStoragePath().substring(lengthOfOldStoragePath);
 
-                        cv.put(ProviderTableMeta.FILE_STORAGE_PATH, targetLocalPath);
+                            cv.put(ProviderTableMeta.FILE_STORAGE_PATH, targetLocalPath);
 
-                        originalPathsToTriggerMediaScan.add(child.getStoragePath());
-                        newPathsToTriggerMediaScan.add(targetLocalPath);
+                            originalPathsToTriggerMediaScan.add(child.getStoragePath());
+                            newPathsToTriggerMediaScan.add(targetLocalPath);
 
-                    }
-                    if (child.getRemotePath().equals(file.getRemotePath())) {
-                        cv.put(
+                        }
+                        if (targetParent.getAvailableOfflineStatus() !=
+                            OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE) {
+                            // moving to an available offline subfolder
+                            cv.put(
+                                ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                                OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT.getValue()
+                            );
+
+                        } else {
+                            // moving to a not available offline subfolder - with care
+                            if (file.getAvailableOfflineStatus() ==
+                                OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE_PARENT) {
+                                cv.put(
+                                    ProviderTableMeta.FILE_KEEP_IN_SYNC,
+                                    OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE.getValue()
+                                );
+                            }
+                        }
+
+                        if (child.getRemotePath().equals(file.getRemotePath())) {
+                            cv.put(
                                 ProviderTableMeta.FILE_PARENT,
                                 targetParent.getFileId()
-                        );
-                    }
-                    operations.add(
+                            );
+                        }
+                        operations.add(
                             ContentProviderOperation.newUpdate(ProviderTableMeta.CONTENT_URI).
-                                    withValues(cv).
-                                    withSelection(
-                                            ProviderTableMeta._ID + "=?",
-                                            new String[]{String.valueOf(child.getFileId())}
-                                    )
-                                    .build());
+                                withValues(cv).
+                                withSelection(
+                                    ProviderTableMeta._ID + "=?",
+                                    new String[]{String.valueOf(child.getFileId())}
+                                )
+                                .build());
 
-                } while (c.moveToNext());
-            }
-            c.close();
-
-            /// 3. apply updates in batch
-            try {
-                if (getContentResolver() != null) {
-                    getContentResolver().applyBatch(MainApp.getAuthority(), operations);
-
-                } else {
-                    getContentProviderClient().applyBatch(operations);
+                    } while (c.moveToNext());
                 }
+                c.close();
 
-            } catch (Exception e) {
-                Log_OC.e(TAG, "Fail to update " + file.getFileId() + " and descendants in database",
+                /// 3. apply updates in batch
+                try {
+                    if (getContentResolver() != null) {
+                        getContentResolver().applyBatch(MainApp.getAuthority(), operations);
+
+                    } else {
+                        getContentProviderClient().applyBatch(operations);
+                    }
+
+                } catch (Exception e) {
+                    Log_OC.e(TAG, "Fail to update " + file.getFileId() + " and descendants in database",
                         e);
+                }
             }
 
-            /// 4. move in local file system 
+            /// 4. move in local file system
             String originalLocalPath = FileStorageUtils.getDefaultSavePathFor(mAccount.name, file);
             String targetLocalPath = defaultSavePath + targetPath;
             File localFile = new File(originalLocalPath);
@@ -791,21 +927,52 @@ public class FileDataStorageManager {
                     new String[]{String.valueOf(parentId)}, null);
         }
 
-        if (c.moveToFirst()) {
-            do {
-                OCFile child = createFileInstance(c);
-                // TODO Enable when "On Device" is recovered ?
-                // if (child.isFolder() || !onlyOnDevice || onlyOnDevice && child.isDown()){
-                ret.add(child);
-                // }
-            } while (c.moveToNext());
+        if (c!= null) {
+            if (c.moveToFirst()) {
+                do {
+                    OCFile child = createFileInstance(c);
+                    // TODO Enable when "On Device" is recovered ?
+                    // if (child.isFolder() || !onlyOnDevice || onlyOnDevice && child.isDown()){
+                    ret.add(child);
+                    // }
+                } while (c.moveToNext());
+            }
+            c.close();
         }
-
-        c.close();
 
         Collections.sort(ret);
 
         return ret;
+    }
+
+    /**
+     * Checks if it is favorite or it is inside a favorite folder
+     *
+     * @param file              {@link OCFile} which ancestors will be searched.
+     * @return                  true/false
+     */
+    private boolean isAnyAncestorAvailableOfflineFolder(OCFile file) {
+        return (getAvailableOfflineAncestorOf(file) != null);
+    }
+
+    /**
+     * Returns ancestor folder with available offline status AVAILABLE_OFFLINE.
+     *
+     * @param file              {@link OCFile} which ancestors will be searched.
+     * @return                  Ancestor folder with available offline status AVAILABLE_OFFLINE, or null if
+     *                          does not exist.
+     */
+    public OCFile getAvailableOfflineAncestorOf(OCFile file) {
+        OCFile avOffAncestor = null;
+        OCFile parent = getFileById(file.getParentId());
+        if (parent != null && parent.isFolder()) {  // file is null for the parent of the root folder
+            if (parent.getAvailableOfflineStatus() == OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE) {
+                avOffAncestor = parent;
+            } else if (!parent.getFileName().equals(OCFile.ROOT_PATH)) {
+                avOffAncestor = getAvailableOfflineAncestorOf(parent);
+            }
+        }
+        return avOffAncestor;
     }
 
 
@@ -842,8 +1009,11 @@ public class FileDataStorageManager {
                 return false;
             }
         }
-        boolean retval = c.moveToFirst();
-        c.close();
+        boolean retval = false;
+        if (c!= null) {
+            retval = c.moveToFirst();
+            c.close();
+        }
         return retval;
     }
 
@@ -910,9 +1080,13 @@ public class FileDataStorageManager {
                     .getColumnIndex(ProviderTableMeta.FILE_LAST_SYNC_DATE)));
             file.setLastSyncDateForData(c.getLong(c.
                     getColumnIndex(ProviderTableMeta.FILE_LAST_SYNC_DATE_FOR_DATA)));
-            file.setFavorite(c.getInt(
-                    c.getColumnIndex(ProviderTableMeta.FILE_KEEP_IN_SYNC)) == 1 ? true : false);
+            file.setAvailableOfflineStatus(
+                OCFile.AvailableOfflineStatus.fromValue(
+                    c.getInt(c.getColumnIndex(ProviderTableMeta.FILE_KEEP_IN_SYNC))
+                )
+            );
             file.setEtag(c.getString(c.getColumnIndex(ProviderTableMeta.FILE_ETAG)));
+            file.setTreeEtag(c.getString(c.getColumnIndex(ProviderTableMeta.FILE_TREE_ETAG)));
             file.setShareViaLink(c.getInt(
                     c.getColumnIndex(ProviderTableMeta.FILE_SHARED_VIA_LINK)) == 1 ? true : false);
             file.setShareWithSharee(c.getInt(
@@ -1038,8 +1212,11 @@ public class FileDataStorageManager {
      */
     private boolean shareExistsForValue(String key, String value) {
         Cursor c = getShareCursorForValue(key, value);
-        boolean retval = c.moveToFirst();
-        c.close();
+        boolean retval = false;
+        if (c != null) {
+            retval = c.moveToFirst();
+            c.close();
+        }
         return retval;
     }
 
@@ -1141,10 +1318,12 @@ public class FileDataStorageManager {
             }
         }
         OCShare share = null;
-        if (c.moveToFirst()) {
-            share = createShareInstance(c);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                share = createShareInstance(c);
+            }
+            c.close();
         }
-        c.close();
         return share;
     }
 
@@ -1361,8 +1540,9 @@ public class FileDataStorageManager {
                         ProviderTableMeta.FILE_LAST_SYNC_DATE_FOR_DATA,
                         file.getLastSyncDateForData()
                 );
-                cv.put(ProviderTableMeta.FILE_KEEP_IN_SYNC, file.isFavorite() ? 1 : 0);
+                cv.put(ProviderTableMeta.FILE_KEEP_IN_SYNC, file.getAvailableOfflineStatus().getValue());
                 cv.put(ProviderTableMeta.FILE_ETAG, file.getEtag());
+                cv.put(ProviderTableMeta.FILE_TREE_ETAG, file.getTreeEtag());
                 cv.put(ProviderTableMeta.FILE_SHARED_VIA_LINK, file.isSharedViaLink() ? 1 : 0);
                 cv.put(ProviderTableMeta.FILE_SHARED_WITH_SHAREE, file.isSharedWithSharee() ? 1 : 0);
                 cv.put(ProviderTableMeta.FILE_PUBLIC_LINK, file.getPublicLink());
@@ -1390,6 +1570,7 @@ public class FileDataStorageManager {
 
                 } else {
                     // adding a new file
+                    setInitialAvailableOfflineStatus(file, cv);
                     operations.add(
                             ContentProviderOperation.newInsert(ProviderTableMeta.CONTENT_URI).
                                     withValues(cv).
@@ -1667,14 +1848,16 @@ public class FileDataStorageManager {
         }
         ArrayList<OCShare> shares = new ArrayList<OCShare>();
         OCShare share = null;
-        if (c.moveToFirst()) {
-            do {
-                share = createShareInstance(c);
-                shares.add(share);
-                // }
-            } while (c.moveToNext());
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+                    share = createShareInstance(c);
+                    shares.add(share);
+                    // }
+                } while (c.moveToNext());
+            }
+            c.close();
         }
-        c.close();
 
         return shares;
     }
@@ -1816,9 +1999,9 @@ public class FileDataStorageManager {
                                     ProviderTableMeta.FILE_CONTENT_TYPE + " != 'DIR' AND " +
                                     ProviderTableMeta.FILE_ACCOUNT_OWNER + " = ? AND " +
                                     ProviderTableMeta.FILE_PATH + " LIKE ?";
-                    Cursor descendentsInConflict = null;
+                    Cursor descendantsInConflict = null;
                     if (getContentResolver() != null) {
-                        descendentsInConflict = getContentResolver().query(
+                        descendantsInConflict = getContentResolver().query(
                                 ProviderTableMeta.CONTENT_URI_FILE,
                                 new String[]{ProviderTableMeta._ID},
                                 whereForDescencentsInConflict,
@@ -1827,7 +2010,7 @@ public class FileDataStorageManager {
                         );
                     } else {
                         try {
-                            descendentsInConflict = getContentProviderClient().query(
+                            descendantsInConflict = getContentProviderClient().query(
                                     ProviderTableMeta.CONTENT_URI_FILE,
                                     new String[]{ProviderTableMeta._ID},
                                     whereForDescencentsInConflict,
@@ -1835,10 +2018,10 @@ public class FileDataStorageManager {
                                     null
                             );
                         } catch (RemoteException e) {
-                            Log_OC.e(TAG, "Failed querying for descendents in conflict " + e.getMessage());
+                            Log_OC.e(TAG, "Failed querying for descendants in conflict " + e.getMessage());
                         }
                     }
-                    if (descendentsInConflict == null || descendentsInConflict.getCount() == 0) {
+                    if (descendantsInConflict == null || descendantsInConflict.getCount() == 0) {
                         Log_OC.d(TAG, "NO MORE conflicts in " + parentPath);
                         if (getContentResolver() != null) {
                             updated = getContentResolver().update(
@@ -1863,11 +2046,11 @@ public class FileDataStorageManager {
                         }
 
                     } else {
-                        Log_OC.d(TAG, "STILL " + descendentsInConflict.getCount() + " in " + parentPath);
+                        Log_OC.d(TAG, "STILL " + descendantsInConflict.getCount() + " in " + parentPath);
                     }
 
-                    if (descendentsInConflict != null) {
-                        descendentsInConflict.close();
+                    if (descendantsInConflict != null) {
+                        descendantsInConflict.close();
                     }
 
                     parentPath = parentPath.substring(0, parentPath.length() - 1);  // trim last /
@@ -1997,12 +2180,13 @@ public class FileDataStorageManager {
         OCCapability capability = null;
         Cursor c = getCapabilityCursorForAccount(accountName);
 
-        if (c.moveToFirst()) {
-            capability = createCapabilityInstance(c);
-        } else {
-            capability = new OCCapability();    // return default with all UNKNOWN
+        capability = new OCCapability();    // default value with all UNKNOWN
+        if (c != null) {
+            if (c.moveToFirst()) {
+                capability = createCapabilityInstance(c);
+            }
+            c.close();
         }
-        c.close();
         return capability;
     }
 
@@ -2058,6 +2242,67 @@ public class FileDataStorageManager {
 
         }
         return capability;
+    }
+
+    private Pair<String, String[]> selectionForAllDescendantsOf(OCFile file) {
+        String selection = ProviderTableMeta.FILE_ACCOUNT_OWNER + "=? AND " +
+            ProviderTableMeta.FILE_PATH + " LIKE ? ";
+        String[] selectionArgs = new String[] {
+            mAccount.name,
+            file.getRemotePath() + "_%"     // one or more characters after remote path
+        };
+        Pair<String, String[]> result = new Pair<String, String[]>(
+            selection,
+            selectionArgs
+        );
+        return result;
+    }
+
+    /**
+     * Get a collection with all the files set by the user as available offline, from all the accounts
+     * in the device.
+     *
+     * This is the only method working with a NULL account in {@link #mAccount}. Not something to do often.
+     *
+     * @return      List with all the files set by the user as available offline.
+     */
+    public List<Pair<OCFile, String>> getAvailableOfflineFilesFromEveryAccount() {
+        List<Pair<OCFile, String>> result = new ArrayList<>();
+
+        Cursor cursorOnKeptInSync = null;
+        try {
+            // query for any favorite file in any OC account
+            cursorOnKeptInSync = getContentResolver().query(
+                ProviderTableMeta.CONTENT_URI,
+                null,
+                ProviderTableMeta.FILE_KEEP_IN_SYNC + " = ?",
+                new String[] { String.valueOf(OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE.getValue()) },
+                // do NOT get also AVAILABLE_OFFLINE_PARENT: only those SET BY THE USER (files or folders)
+                null
+            );
+
+            if (cursorOnKeptInSync != null && cursorOnKeptInSync.moveToFirst()) {
+                OCFile file;
+                String accountName;
+                do {
+                    file = createFileInstance(cursorOnKeptInSync);
+                    accountName = cursorOnKeptInSync.getString(
+                        cursorOnKeptInSync.getColumnIndex(ProviderTableMeta.FILE_ACCOUNT_OWNER)
+                    );
+                    result.add(new Pair<>(file, accountName));
+                } while (cursorOnKeptInSync.moveToNext());
+            }
+
+        } catch (Exception e) {
+            Log_OC.e(TAG, "Exception retrieving all the available offline files", e);
+
+        } finally {
+            if (cursorOnKeptInSync != null) {
+                cursorOnKeptInSync.close();
+            }
+        }
+
+        return result;
     }
 
 }

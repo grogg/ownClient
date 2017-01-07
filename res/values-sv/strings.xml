@@ -13,12 +13,9 @@
   <string name="actionbar_send_file">Skicka</string>
   <string name="actionbar_sort">Sortera</string>
   <string name="actionbar_sort_title">Sortera efter</string>
-  <string-array name="actionbar_sortby">
-    <item>A-Ö</item>
-    <item>Nyast - Äldst</item>
-  </string-array>
-  <!--TODO re-enable when server-side folder size calculation is available   
-    	<item>Biggest - Smallest</item>-->
+  <string name="actionbar_sort_by_name">A-Ö</string>
+  <string name="actionbar_sort_by_date">Nyast - Äldst</string>
+  <string name="actionbar_sort_by_size">Störst - Minst</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">Alla filer</string>
@@ -75,6 +72,7 @@
   <string name="file_list_loading">Laddar...</string>
   <string name="file_list_no_app_for_file_type">Inget program kan hantera denna filtyp</string>
   <string name="local_file_list_empty">Det finns inga filer i den här mappen.</string>
+  <string name="local_file_list_empty_just_folders">Det finns inga mappar i den här mappen.</string>
   <string name="upload_list_empty">Inga uppladdningar tillgängliga.</string>
   <string name="file_list_folder">mapp</string>
   <string name="file_list_folders">mappar</string>
@@ -103,6 +101,7 @@
   <string name="common_loading">Laddar...</string>
   <string name="common_unknown">okänt</string>
   <string name="common_error_unknown">Okänt fel</string>
+  <string name="common_pending">Väntar</string>
   <string name="about_title">Om</string>
   <string name="change_password">Ändra lösenord</string>
   <string name="delete_account">Radera konto</string>
@@ -223,13 +222,14 @@
 	</string>
   <string name="auth_can_not_auth_against_server">Det går inte att autentisera mot denna server</string>
   <string name="auth_account_does_not_exist">Det finns inget konto på denna enhet än</string>
-  <string name="favorite">Sätt som tillgänglig offline</string>
-  <string name="unfavorite">Ta bort som tillgänglig offline</string>
+  <string name="set_available_offline">Sätt som tillgänglig offline</string>
+  <string name="unset_available_offline">Ta bort som tillgänglig offline</string>
   <string name="common_rename">Byt namn</string>
   <string name="common_remove">Radera</string>
   <string name="confirmation_remove_file_alert">Vill du verkligen ta bort %1$s?</string>
   <string name="confirmation_remove_folder_alert">Vill du verkligen ta bort %1$s och dess innehåll?</string>
   <string name="confirmation_remove_local">Endast lokalt</string>
+  <string name="confirmation_remove_account_alert">Vll du verkligen ta bort kontot %1$s?</string>
   <string name="remove_success_msg">Lyckad radering</string>
   <string name="remove_fail_msg">Radering kunde inte slutföras</string>
   <string name="rename_dialog_title">Ange ett nytt namn</string>
@@ -315,7 +315,6 @@
   <string name="network_error_socket_timeout_exception">Ett fel uppstod i väntan på servern, operationen kunde inte ha gjorts</string>
   <string name="network_error_connect_timeout_exception">Ett fel uppstod i väntan på servern, operationen kunde inte ha gjorts</string>
   <string name="network_host_not_available">Åtgärden kunte inte slutföras, servern är ej tillgänglig</string>
-  <string name="empty"></string>
   <string name="forbidden_permissions">Du har inga rättigheter %s</string>
   <string name="forbidden_permissions_rename">att döpa om denna fil</string>
   <string name="forbidden_permissions_delete">att radera denna fil</string>
@@ -327,6 +326,7 @@
   <string name="downloader_download_file_not_found">Filen är inte längre tillgänglig på servern</string>
   <string name="prefs_category_accounts">Konton</string>
   <string name="prefs_add_account">Lägg till konto</string>
+  <string name="drawer_manage_accounts">Hantera konton</string>
   <string name="auth_redirect_non_secure_connection_title">Den säkra kopplingen omdirigeras via en osäker rutt.</string>
   <string name="actionbar_logger">Loggar</string>
   <string name="log_send_history_button">Historik skickat</string>
@@ -368,6 +368,9 @@
   <string name="file_list__footer__files">%1$d filer</string>
   <string name="file_list__footer__files_and_folder">%1$d filer, 1 mapp</string>
   <string name="file_list__footer__files_and_folders">%1$d filer, %2$d mappar</string>
+  <string name="prefs_instant_upload_source_path_title">Kameramapp (%1$s)</string>
+  <string name="prefs_instant_upload_source_path_title_required">krävs</string>
+  <string name="prefs_instant_upload_source_path_title_optional">valfritt</string>
   <string name="prefs_instant_behaviour_dialogTitle">Originalfilen kommer att...</string>
   <string name="prefs_instant_behaviour_title">Originalfilen kommer att...</string>
   <string name="upload_copy_files">Kopiera fil</string>
@@ -412,4 +415,10 @@
   <string name="manage_space_error">Vissa filer kunde inte raderas.</string>
   <string name="permission_storage_access">Ytterligare rättigheter krävs för att ladda upp &amp; ner filer.</string>
   <string name="local_file_not_found_toast">Filen hittades inte i det lokala filsystemet</string>
+  <string name="confirmation_remove_files_alert">Vill du verkligen ta bort de markerade objekten?</string>
+  <string name="confirmation_remove_folders_alert">Vill du verkligen ta bort de markerade objekten och deras innehåll?</string>
+  <plurals name="items_selected_count">
+    <item quantity="one">%d vald</item>
+    <item quantity="other">%d valda</item>
+  </plurals>
 </resources>

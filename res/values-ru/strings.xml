@@ -13,12 +13,9 @@
   <string name="actionbar_send_file">Отправить</string>
   <string name="actionbar_sort">Упорядочить</string>
   <string name="actionbar_sort_title">Упорядочить по</string>
-  <string-array name="actionbar_sortby">
-    <item>А-Я</item>
-    <item>Новое - Старое</item>
-  </string-array>
-  <!--TODO re-enable when server-side folder size calculation is available   
-    	<item>Biggest - Smallest</item>-->
+  <string name="actionbar_sort_by_name">А-Я</string>
+  <string name="actionbar_sort_by_date">Новые - старые</string>
+  <string name="actionbar_sort_by_size">Большие - маленькие</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">Все файлы</string>
@@ -76,6 +73,7 @@
   <string name="file_list_loading">Загрузка...</string>
   <string name="file_list_no_app_for_file_type">Приложение для этого типа файла не найдено!</string>
   <string name="local_file_list_empty">В этом каталоге нет файлов.</string>
+  <string name="local_file_list_empty_just_folders">В этом каталоге нет каталогов.</string>
   <string name="upload_list_empty">Нет доступных загрузок.</string>
   <string name="file_list_folder">каталог</string>
   <string name="file_list_folders">каталоги</string>
@@ -104,6 +102,7 @@
   <string name="common_loading">Загрузка ...</string>
   <string name="common_unknown">неизвестно</string>
   <string name="common_error_unknown">Неизвестная ошибка</string>
+  <string name="common_pending">Ожидается</string>
   <string name="about_title">О программе</string>
   <string name="change_password">Сменить пароль</string>
   <string name="delete_account">Удалить аккаунт</string>
@@ -224,16 +223,18 @@
 ⇥</string>
   <string name="auth_can_not_auth_against_server">Не удается авторизоваться на этом сервере</string>
   <string name="auth_account_does_not_exist">Аккаунт ещё не существует на устройстве</string>
-  <string name="favorite">Сделать доступным автономно</string>
-  <string name="unfavorite">Убрать доступность автономно</string>
+  <string name="set_available_offline">Сделать доступным автономно</string>
+  <string name="unset_available_offline">Убрать доступность автономно</string>
   <string name="common_rename">Переименовать</string>
   <string name="common_remove">Удалить</string>
   <string name="confirmation_remove_file_alert">Вы действительно хотите удалить %1$s?</string>
   <string name="confirmation_remove_folder_alert">Вы действительно хотите удалить %1$s и его содержимое?</string>
   <string name="confirmation_remove_local">Только локально</string>
+  <string name="confirmation_remove_account_alert">Вы действительно хотите удалить аккаунт %1$s?</string>
   <string name="remove_success_msg">Удаление завершено</string>
   <string name="remove_fail_msg">Ошибка удаления</string>
   <string name="rename_dialog_title">Введите новое имя</string>
+  <string name="available_offline_inherited_msg">Каталог, содержащий этот файл, доступен автономно</string>
   <string name="rename_local_fail_msg">Локальная копия не может быть переименована; попробуйте другое имя</string>
   <string name="rename_server_fail_msg">Переименование не может быть завершено</string>
   <string name="sync_file_fail_msg">Удаленный файл не может быть проверен</string>
@@ -316,7 +317,6 @@
   <string name="network_error_socket_timeout_exception">Во время ожидания сервера произошла ошибка, действие не может быть выполнено</string>
   <string name="network_error_connect_timeout_exception">Во время ожидания сервера произошла ошибка, действие не может быть выполнено</string>
   <string name="network_host_not_available">Действие не может быть выполнено, сервер недоступен</string>
-  <string name="empty"></string>
   <string name="forbidden_permissions">У вас нет прав %s</string>
   <string name="forbidden_permissions_rename">для переименования этого файла</string>
   <string name="forbidden_permissions_delete">для удаления этого файла</string>
@@ -328,6 +328,7 @@
   <string name="downloader_download_file_not_found">Этот файл больше недоступен на сервере</string>
   <string name="prefs_category_accounts">Учётные записи</string>
   <string name="prefs_add_account">Добавить учетную запись</string>
+  <string name="drawer_manage_accounts">Управление аккаунтами</string>
   <string name="auth_redirect_non_secure_connection_title">Безопасное соединение перенаправлено через небезопасный маршрут.</string>
   <string name="actionbar_logger">Журналы</string>
   <string name="log_send_history_button">История отправок</string>
@@ -369,6 +370,9 @@
   <string name="file_list__footer__files">%1$d файлов</string>
   <string name="file_list__footer__files_and_folder">%1$d файлов, 1 каталог</string>
   <string name="file_list__footer__files_and_folders">%1$d файлов, %2$d каталогов</string>
+  <string name="prefs_instant_upload_source_path_title">Каталог камеры (%1$s)</string>
+  <string name="prefs_instant_upload_source_path_title_required">обязательно</string>
+  <string name="prefs_instant_upload_source_path_title_optional">не обязательно</string>
   <string name="prefs_instant_behaviour_dialogTitle">Исходный файл будет ...</string>
   <string name="prefs_instant_behaviour_title">Исходный файл будет ...</string>
   <string name="upload_copy_files">Копировать файл</string>

@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   Copyright (C) 2012 Bartek Przybylski
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -21,7 +21,7 @@
 package com.joshuaglenlee.ownclient.ui.activity;
 
 import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
-import com.joshuaglenlee.ownclient.files.FileOperationsHelper;
+import com.joshuaglenlee.ownclient.ui.helpers.FileOperationsHelper;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader.FileDownloaderBinder;
 import com.joshuaglenlee.ownclient.files.services.FileUploader.FileUploaderBinder;
 import com.joshuaglenlee.ownclient.services.OperationsService.OperationsServiceBinder;

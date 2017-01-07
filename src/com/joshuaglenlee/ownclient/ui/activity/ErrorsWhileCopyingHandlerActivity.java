@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   @author David A. Velasco
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -47,7 +47,7 @@ import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
-import com.joshuaglenlee.ownclient.ui.dialog.IndeterminateProgressDialog;
+import com.joshuaglenlee.ownclient.ui.dialog.LoadingDialog;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 
@@ -216,7 +216,7 @@ public class ErrorsWhileCopyingHandlerActivity  extends AppCompatActivity
         @Override
         protected void onPreExecute () {
             /// progress dialog and disable 'Move' button
-            mCurrentDialog = IndeterminateProgressDialog.newInstance(R.string.wait_a_moment, false);
+            mCurrentDialog = LoadingDialog.newInstance(R.string.wait_a_moment, false);
             mCurrentDialog.show(getSupportFragmentManager(), WAIT_DIALOG_TAG);
             findViewById(R.id.ok).setEnabled(false);
         }

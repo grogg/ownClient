@@ -3,7 +3,7 @@
   ownCloud Android client application
 
   Copyright (C) 2012  Bartek Przybylski
-  Copyright (C) 2015 ownCloud Inc.
+  Copyright (C) 2016 ownCloud GmbH.
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2,
@@ -45,9 +45,33 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="1" />
     <item
-        android:id="@+id/action_remove_file"
-        android:title="@string/common_remove"
-        android:icon="@drawable/ic_action_delete_white"
+        android:id="@+id/action_set_available_offline"
+        android:title="@string/set_available_offline"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_action_set_available_offline"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/action_unset_available_offline"
+        android:title="@string/unset_available_offline"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_action_unset_available_offline"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/action_open_file_with"
+        android:title="@string/actionbar_open_with"
+        android:icon="@drawable/ic_open_in_app"
+        app:showAsAction="never"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/action_send_file"
+        android:title="@string/actionbar_send_file"
+        android:icon="@drawable/ic_send_white"
+        app:showAsAction="never"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/action_move"
+        android:title="@string/actionbar_move"
+        android:icon="@drawable/ic_action_move"
         app:showAsAction="ifRoom"
         android:orderInCategory="1" />
     <item
@@ -57,44 +81,22 @@
         app:showAsAction="ifRoom"
         android:orderInCategory="1" />
     <item
-        android:id="@+id/action_move"
-        android:title="@string/actionbar_move"
-        android:icon="@drawable/ic_action_move"
-        app:showAsAction="ifRoom"
-        android:orderInCategory="1" />
-    <item
-        android:id="@+id/action_open_file_with"
-        android:title="@string/actionbar_open_with"
-        android:icon="@drawable/ic_open_in_app"
-        app:showAsAction="never"
-        android:orderInCategory="1" />
-    <item
         android:id="@+id/action_rename_file"
         android:title="@string/common_rename"
         android:icon="@drawable/ic_pencil"
         app:showAsAction="never"
         android:orderInCategory="1" />
     <item
-        android:id="@+id/action_send_file"
-        android:title="@string/actionbar_send_file"
-        app:showAsAction="never"
-        android:orderInCategory="1" />
-    <item
-        android:id="@+id/action_favorite_file"
-        android:title="@string/favorite"
-        app:showAsAction="never"
-        android:icon="@drawable/ic_action_set_available_offline"
-        android:orderInCategory="1" />
-    <item
-        android:id="@+id/action_unfavorite_file"
-        android:title="@string/unfavorite"
-        app:showAsAction="never"
-        android:icon="@drawable/ic_action_unset_available_offline"
-        android:orderInCategory="1" />
-    <item
         android:id="@+id/action_see_details"
         android:title="@string/actionbar_see_details"
+        android:icon="@drawable/ic_info_white"
         app:showAsAction="never"
+        android:orderInCategory="1" />
+    <item
+        android:id="@+id/action_remove_file"
+        android:title="@string/common_remove"
+        android:icon="@drawable/ic_action_delete_white"
+        app:showAsAction="ifRoom"
         android:orderInCategory="1" />
 
 </menu>

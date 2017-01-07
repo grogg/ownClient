@@ -5,7 +5,7 @@
  *   @author masensio
  *   @author David A. Velasco
  *   Copyright (C) 2011  Bartek Przybylski
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -28,7 +28,9 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.SparseBooleanArray;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -60,9 +62,11 @@ import com.joshuaglenlee.ownclient.ui.dialog.ConfirmationDialogFragment;
 import com.joshuaglenlee.ownclient.ui.dialog.CreateFolderDialogFragment;
 import com.joshuaglenlee.ownclient.ui.dialog.RemoveFilesDialogFragment;
 import com.joshuaglenlee.ownclient.ui.dialog.RenameFileDialogFragment;
+import com.joshuaglenlee.ownclient.ui.helpers.SparseBooleanArrayParcelable;
+import com.joshuaglenlee.ownclient.ui.preview.PreviewAudioFragment;
 import com.joshuaglenlee.ownclient.ui.preview.PreviewImageFragment;
-import com.joshuaglenlee.ownclient.ui.preview.PreviewMediaFragment;
 import com.joshuaglenlee.ownclient.ui.preview.PreviewTextFragment;
+import com.joshuaglenlee.ownclient.ui.preview.PreviewVideoFragment;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 import java.io.File;
@@ -81,9 +85,8 @@ public class OCFileListFragment extends ExtendedListFragment {
     private static final String MY_PACKAGE = OCFileListFragment.class.getPackage() != null ?
             OCFileListFragment.class.getPackage().getName() : "com.joshuaglenlee.ownclient.ui.fragment";
 
-    public final static String ARG_JUST_FOLDERS = MY_PACKAGE + ".JUST_FOLDERS";
-    public final static String ARG_ALLOW_CONTEXTUAL_ACTIONS = MY_PACKAGE + ".ALLOW_CONTEXTUAL";
-    public final static String ARG_HIDE_FAB = MY_PACKAGE + ".HIDE_FAB";
+    protected final static String ARG_ALLOW_CONTEXTUAL_MODE = MY_PACKAGE + ".ALLOW_CONTEXTUAL";
+    protected final static String ARG_HIDE_FAB = MY_PACKAGE + ".HIDE_FAB";
 
     private static final String KEY_FILE = MY_PACKAGE + ".extra.FILE";
     private static final String KEY_FAB_EVER_CLICKED = "FAB_EVER_CLICKED";
@@ -96,7 +99,6 @@ public class OCFileListFragment extends ExtendedListFragment {
 
     private OCFile mFile = null;
     private FileListListAdapter mAdapter;
-    private boolean mJustFolders;
 
     private int mStatusBarColorActionMode;
     private int mStatusBarColor;
@@ -104,6 +106,31 @@ public class OCFileListFragment extends ExtendedListFragment {
     private boolean mHideFab = true;
     private boolean miniFabClicked = false;
     private ActionMode mActiveActionMode;
+    private OCFileListFragment.MultiChoiceModeListener mMultiChoiceModeListener;
+
+
+    /**
+     * Public factory method to create new {@link OCFileListFragment} instances.
+     *
+     * @param justFolders               When 'true', only folders will be shown to the user, not files.
+     * @param hideFAB                   When 'true', floating action button is hidden.
+     * @param allowContextualMode       When 'true', contextual action mode is enabled long-pressing an item.
+     * @return                          New fragment with arguments set.
+     */
+    public static OCFileListFragment newInstance(
+        boolean justFolders,
+        boolean hideFAB,
+        boolean allowContextualMode
+    ) {
+        OCFileListFragment frag = new OCFileListFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_JUST_FOLDERS, justFolders);
+        args.putBoolean(ARG_HIDE_FAB, hideFAB);
+        args.putBoolean(ARG_ALLOW_CONTEXTUAL_MODE, allowContextualMode);
+        frag.setArguments(args);
+        return frag;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -143,9 +170,9 @@ public class OCFileListFragment extends ExtendedListFragment {
         Log_OC.i(TAG, "onCreateView() start");
         View v = super.onCreateView(inflater, container, savedInstanceState);
         Bundle args = getArguments();
-        boolean allowContextualActions = (args != null) && args.getBoolean(ARG_ALLOW_CONTEXTUAL_ACTIONS, false);
+        boolean allowContextualActions = (args != null) && args.getBoolean(ARG_ALLOW_CONTEXTUAL_MODE, false);
         if (allowContextualActions) {
-            setChoiceModeAsMultipleModal();
+            setChoiceModeAsMultipleModal(savedInstanceState);
         }
         Log_OC.i(TAG, "onCreateView() end");
         return v;
@@ -171,21 +198,17 @@ public class OCFileListFragment extends ExtendedListFragment {
             mFile = savedInstanceState.getParcelable(KEY_FILE);
         }
 
-        if (mJustFolders) {
-            setFooterEnabled(false);
-        } else {
-            setFooterEnabled(true);
-        }
+        boolean justFolders = isShowingJustFolders();
+        setFooterEnabled(!justFolders);
 
-        Bundle args = getArguments();
-        mJustFolders = (args != null) && args.getBoolean(ARG_JUST_FOLDERS, false);
         mAdapter = new FileListListAdapter(
-                mJustFolders,
+                justFolders,
                 getActivity(),
                 mContainerActivity
         );
         setListAdapter(mAdapter);
 
+        Bundle args = getArguments();
         mHideFab = (args != null) && args.getBoolean(ARG_HIDE_FAB, false);
         if (mHideFab) {
             setFabEnabled(false);
@@ -340,88 +363,210 @@ public class OCFileListFragment extends ExtendedListFragment {
                 com.getbase.floatingactionbutton.R.id.fab_label)).setVisibility(View.GONE);
     }
 
-    private void setChoiceModeAsMultipleModal() {
+    /**
+     * Handler for multiple selection mode.
+     *
+     * Manages input from the user when one or more files or folders are selected in the list.
+     *
+     * Also listens to changes in navigation drawer to hide and recover multiple selection when it's opened
+     * and closed.
+     */
+    private class MultiChoiceModeListener
+        implements AbsListView.MultiChoiceModeListener, DrawerLayout.DrawerListener {
 
-        setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        private static final String KEY_ACTION_MODE_CLOSED_BY_DRAWER = "KILLED_ACTION_MODE";
+        private static final String KEY_SELECTION_WHEN_CLOSED_BY_DRAWER = "CHECKED_ITEMS";
 
-        setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+        /**
+         * True when action mode is finished because the drawer was opened
+         */
+        private boolean mActionModeClosedByDrawer = false;
 
-            @Override
-            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                getListView().invalidateViews();
-                mode.invalidate();
-            }
+        /**
+         * Selected items in list when action mode is closed by drawer
+         */
+        private SparseBooleanArray mSelectionWhenActionModeClosedByDrawer = null;
 
-            @Override
-            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-                mActiveActionMode = mode;
+        @Override
+        public void onDrawerSlide(View drawerView, float slideOffset) {
+            // nothing to do
+        }
 
-                MenuInflater inflater = getActivity().getMenuInflater();
-                inflater.inflate(R.menu.file_actions_menu, menu);
-                mode.invalidate();
+        @Override
+        public void onDrawerOpened(View drawerView) {
+            // nothing to do
+        }
 
-                //set gray color
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Window w = getActivity().getWindow();
-                    mStatusBarColor = w.getStatusBarColor();
-                    w.setStatusBarColor(mStatusBarColorActionMode);
+        /**
+         * When the navigation drawer is closed, action mode is recovered in the same state as was
+         * when the drawer was (started to be) opened.
+         *
+         * @param drawerView        Navigation drawer just closed.
+         */
+        @Override
+        public void onDrawerClosed(View drawerView) {
+            if (mSelectionWhenActionModeClosedByDrawer !=null && mActionModeClosedByDrawer) {
+                for (int i = 0; i< mSelectionWhenActionModeClosedByDrawer.size(); i++) {
+                    if (mSelectionWhenActionModeClosedByDrawer.valueAt(i)) {
+                        getListView().setItemChecked(
+                            mSelectionWhenActionModeClosedByDrawer.keyAt(i),
+                            true
+                        );
+                    }
                 }
+            }
+            mSelectionWhenActionModeClosedByDrawer = null;
+        }
 
-                // hide FAB in multi selection mode
-                setFabEnabled(false);
+        /**
+         * If the action mode is active when the navigation drawer starts to move, the action
+         * mode is closed and the selection stored to be recovered when the drawer is closed.
+         *
+         * @param newState     One of STATE_IDLE, STATE_DRAGGING or STATE_SETTLING.
+         */
+        @Override
+        public void onDrawerStateChanged(int newState) {
+            if (DrawerLayout.STATE_DRAGGING == newState && mActiveActionMode != null) {
+                mSelectionWhenActionModeClosedByDrawer = getListView().getCheckedItemPositions().clone();
+                mActiveActionMode.finish();
+                mActionModeClosedByDrawer = true;
+            }
+        }
 
-                return true;
+
+        /**
+         * Update action mode bar when an item is selected / unselected in the list
+         */
+        @Override
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+            getListView().invalidateViews();
+            mode.invalidate();
+        }
+
+        /**
+         * Load menu and customize UI when action mode is started.
+         */
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            mActiveActionMode = mode;
+
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.file_actions_menu, menu);
+            mode.invalidate();
+
+            //set gray color
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                Window w = getActivity().getWindow();
+                mStatusBarColor = w.getStatusBarColor();
+                w.setStatusBarColor(mStatusBarColorActionMode);
             }
 
-            @Override
-            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-                List<OCFile> checkedFiles = mAdapter.getCheckedItems(getListView());
-                final int checkedCount = checkedFiles.size();
-                String title = getResources().getQuantityString(
-                    R.plurals.items_selected_count,
-                    checkedCount,
-                    checkedCount
+            // hide FAB in multi selection mode
+            setFabEnabled(false);
+
+            return true;
+        }
+
+        /**
+         * Updates available action in menu depending on current selection.
+         */
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            List<OCFile> checkedFiles = mAdapter.getCheckedItems(getListView());
+            final int checkedCount = checkedFiles.size();
+            String title = getResources().getQuantityString(
+                R.plurals.items_selected_count,
+                checkedCount,
+                checkedCount
+            );
+            mode.setTitle(title);
+            FileMenuFilter mf = new FileMenuFilter(
+                checkedFiles,
+                ((FileActivity) getActivity()).getAccount(),
+                mContainerActivity,
+                getActivity()
+            );
+            mf.filter(menu);
+            return true;
+        }
+
+        /**
+         * Starts the corresponding action when a menu item is tapped by the user.
+         */
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            return onFileActionChosen(item.getItemId());
+        }
+
+        /**
+         * Restores UI.
+         */
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActiveActionMode = null;
+
+            // reset to previous color
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getActivity().getWindow().setStatusBarColor(mStatusBarColor);
+            }
+
+            // show FAB on multi selection mode exit
+            if(!mHideFab) {
+                setFabEnabled(true);
+            }
+        }
+
+
+        public void storeStateIn(Bundle outState) {
+            outState.putBoolean(KEY_ACTION_MODE_CLOSED_BY_DRAWER, mActionModeClosedByDrawer);
+            if (mSelectionWhenActionModeClosedByDrawer != null) {
+                SparseBooleanArrayParcelable sbap = new SparseBooleanArrayParcelable(
+                    mSelectionWhenActionModeClosedByDrawer
                 );
-                mode.setTitle(title);
-                FileMenuFilter mf = new FileMenuFilter(
-                    checkedFiles,
-                    ((FileActivity) getActivity()).getAccount(),
-                    mContainerActivity,
-                    getActivity()
-                );
-                mf.filter(menu);
-                return true;
+                outState.putParcelable(KEY_SELECTION_WHEN_CLOSED_BY_DRAWER, sbap);
             }
+        }
 
-            @Override
-            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-                return onFileActionChosen(item.getItemId());
+        public void loadStateFrom(Bundle savedInstanceState) {
+            mActionModeClosedByDrawer = savedInstanceState.getBoolean(
+                KEY_ACTION_MODE_CLOSED_BY_DRAWER,
+                mActionModeClosedByDrawer
+            );
+            SparseBooleanArrayParcelable sbap = savedInstanceState.getParcelable(
+                KEY_SELECTION_WHEN_CLOSED_BY_DRAWER
+            );
+            if (sbap != null) {
+                mSelectionWhenActionModeClosedByDrawer = sbap.getSparseBooleanArray();
             }
-
-            @Override
-            public void onDestroyActionMode(ActionMode mode) {
-                mActiveActionMode = null;
-
-                // reset to previous color
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    getActivity().getWindow().setStatusBarColor(mStatusBarColor);
-                }
-
-                // show FAB on multi selection mode exit
-                if(!mHideFab) {
-                    setFabEnabled(true);
-                }
-            }
-        });
+        }
     }
 
     /**
-     * Saves the current listed folder.
+     * Init listener that will handle interactions in multiple selection mode.
+     */
+    private void setChoiceModeAsMultipleModal(Bundle savedInstanceState) {
+        setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mMultiChoiceModeListener = new MultiChoiceModeListener();
+        if (savedInstanceState != null) {
+            mMultiChoiceModeListener.loadStateFrom(savedInstanceState);
+        }
+        setMultiChoiceModeListener(mMultiChoiceModeListener);
+        ((FileActivity)getActivity()).addDrawerListener(mMultiChoiceModeListener);
+    }
+
+    /**
+     * Saves the current listed folder
      */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(KEY_FILE, mFile);
+
+        // If this fragment is used to show target folders where a selected file/folder can be
+        // copied/moved, multiple choice is disabled
+        if (mMultiChoiceModeListener != null) {
+            mMultiChoiceModeListener.storeStateIn(outState);
+        }
     }
 
     @Override
@@ -491,21 +636,26 @@ public class OCFileListFragment extends ExtendedListFragment {
 
             } else { /// Click on a file
                 if (PreviewImageFragment.canBePreviewed(file)) {
-                    // preview image - it handles the download, if needed
-                    ((FileDisplayActivity)mContainerActivity).startImagePreview(file);
-                } else if (PreviewTextFragment.canBePreviewed(file)){
-                    ((FileDisplayActivity)mContainerActivity).startTextPreview(file);
-                } else if (file.isDown()) {
-                    if (PreviewMediaFragment.canBePreviewed(file)) {
-                        // media preview
-                        ((FileDisplayActivity) mContainerActivity).startMediaPreview(file, 0, true);
-                    } else {
-                        mContainerActivity.getFileOperationsHelper().openFile(file);
-                    }
+                    // preview image - it handles the sync, if needed
+                    ((FileDisplayActivity) mContainerActivity).startImagePreview(file);
+
+                } else if (PreviewTextFragment.canBePreviewed(file)) {
+                    ((FileDisplayActivity) mContainerActivity).startTextPreview(file);
+                    mContainerActivity.getFileOperationsHelper().syncFile(file);
+
+                } else if (PreviewAudioFragment.canBePreviewed(file)) {
+                    // media preview
+                    ((FileDisplayActivity) mContainerActivity).startAudioPreview(file, 0);
+                    mContainerActivity.getFileOperationsHelper().syncFile(file);
+
+                } else if (PreviewVideoFragment.canBePreviewed(file)) {
+                    // media preview
+                    ((FileDisplayActivity) mContainerActivity).startVideoPreview(file, 0);
+                    mContainerActivity.getFileOperationsHelper().syncFile(file);
 
                 } else {
-                    // automatic download, preview on finish
-                    ((FileDisplayActivity) mContainerActivity).startDownloadForPreview(file);
+                    // sync file content, then open with external apps
+                    ((FileDisplayActivity) mContainerActivity).startSyncThenOpen(file);
                 }
 
             }
@@ -580,12 +730,15 @@ public class OCFileListFragment extends ExtendedListFragment {
                 ((FileDisplayActivity) mContainerActivity).cancelTransference(checkedFiles);
                 return true;
             }
-            case R.id.action_favorite_file: {
-                mContainerActivity.getFileOperationsHelper().toggleFavorites(checkedFiles, true);
+            case R.id.action_set_available_offline: {
+                mContainerActivity.getFileOperationsHelper().toggleAvailableOffline(checkedFiles, true);
+                getListView().invalidateViews();
                 return true;
             }
-            case R.id.action_unfavorite_file: {
-                mContainerActivity.getFileOperationsHelper().toggleFavorites(checkedFiles, false);
+            case R.id.action_unset_available_offline: {
+                mContainerActivity.getFileOperationsHelper().toggleAvailableOffline(checkedFiles, false);
+                getListView().invalidateViews();
+                invalidateActionMode();
                 return true;
             }
             case R.id.action_move: {
@@ -617,10 +770,12 @@ public class OCFileListFragment extends ExtendedListFragment {
     /**
      * Calls {@link OCFileListFragment#listDirectory(OCFile)} with a null parameter
      */
-    public void listDirectory(/*boolean onlyOnDevice*/){
-        listDirectory(null);
-        // TODO Enable when "On Device" is recovered ?
-        // listDirectory(null, onlyOnDevice);
+    public void listDirectory(boolean reloadData){
+        if (reloadData) {
+            listDirectory(null);
+        } else {
+            getListView().invalidateViews();
+        }
     }
 
     /**
@@ -664,7 +819,7 @@ public class OCFileListFragment extends ExtendedListFragment {
     }
 
     private void updateLayout() {
-        if (!mJustFolders) {
+        if (!isShowingJustFolders()) {
             int filesCount = 0, foldersCount = 0;
             int count = mAdapter.getCount();
             OCFile file;

@@ -3,7 +3,7 @@
  *
  *   @author Maria Asensio
  *   @author David A. Velasco
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -125,7 +125,7 @@ public class SamlWebViewDialog extends DialogFragment {
             mTargetUrl = savedInstanceState.getString(ARG_TARGET_URL);
         }
         
-        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.Theme_ownCloud_Dialog);
+        setStyle(DialogFragment.STYLE_NO_TITLE, 0);
     }
     
     @SuppressWarnings("deprecation")

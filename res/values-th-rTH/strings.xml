@@ -13,12 +13,9 @@
   <string name="actionbar_send_file">ส่ง</string>
   <string name="actionbar_sort">จัดเรียง</string>
   <string name="actionbar_sort_title">เรียงตาม</string>
-  <string-array name="actionbar_sortby">
-    <item>A-Z</item>
-    <item>ใหม่ที่สุด - เก่าที่สุด</item>
-  </string-array>
-  <!--TODO re-enable when server-side folder size calculation is available   
-    	<item>Biggest - Smallest</item>-->
+  <string name="actionbar_sort_by_name">A-Z</string>
+  <string name="actionbar_sort_by_date">ใหม่ที่สุด - เก่าที่สุด</string>
+  <string name="actionbar_sort_by_size">ใหญ่ที่สุด - เล็กที่สุด</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">ไฟล์ทั้งหมด</string>
@@ -37,10 +34,10 @@
   <string name="prefs_instant_upload_summary">อัพโหลดรูปภาพที่ถ่ายโดยกล้องทันที</string>
   <string name="prefs_instant_video_upload">อัพโหลดวิดีโอทันที</string>
   <string name="prefs_instant_video_upload_summary">อัพโหลดวิดีโอที่บันทึกโดยกล้องทันที</string>
-  <string name="prefs_log_title">เปิดใช้ระบบบันทึกข้อมูลการใช้งาน</string>
+  <string name="prefs_log_title">เปิดใช้ระบบบันทึกข้อมูล</string>
   <string name="prefs_log_summary">นี้จะใช้เพื่อบันทึกปัญหาที่เกิดขึ้น</string>
   <string name="prefs_log_title_history">ประวัติย้อนหลังการเข้าใช้งาน</string>
-  <string name="prefs_log_summary_history">สิ่งนี้จะแสดงข้อมูลที่ถูกบันทึกไว้</string>
+  <string name="prefs_log_summary_history">สิ่งนี้จะแสดง log ที่ถูกบันทึกไว้</string>
   <string name="prefs_log_delete_history_button">ลบประวัติย้อนหลัง</string>
   <string name="prefs_help">ช่วยเหลือ</string>
   <string name="prefs_recommend">แนะนำให้เพื่อน</string>
@@ -75,6 +72,7 @@
   <string name="file_list_loading">กำลังโหลด...</string>
   <string name="file_list_no_app_for_file_type">ไม่พบแอพสำหรับชนิดของไฟล์</string>
   <string name="local_file_list_empty">ยังไม่มีไฟล์ในโฟลเดอร์นี้</string>
+  <string name="local_file_list_empty_just_folders">ไม่มีโฟลเดอร์ในโฟลเดอร์นี้</string>
   <string name="upload_list_empty">ไม่พบการอัพโหลดใดๆ</string>
   <string name="file_list_folder">โฟลเดอร์</string>
   <string name="file_list_folders">โฟลเดอร์</string>
@@ -103,6 +101,7 @@
   <string name="common_loading">กำลังโหลด ...</string>
   <string name="common_unknown">ไม่รู้จัก</string>
   <string name="common_error_unknown">ข้อผิดพลาดที่ไม่ทราบสาเหตุ</string>
+  <string name="common_pending">อยู่ระหว่างดำเนินการ</string>
   <string name="about_title">เกี่ยวกับเรา</string>
   <string name="change_password">เปลี่ยนรหัสผ่าน</string>
   <string name="delete_account">ลบบัญชี</string>
@@ -222,16 +221,18 @@
   <string name="auth_fail_get_user_name">เซิร์ฟเวอร์ของคุณไม่ได้ส่งคืนรหัสผู้ใช้ที่ถูกต้อง กรุณาติดต่อผู้ดูแลระบบ!</string>
   <string name="auth_can_not_auth_against_server">ไม่สามารถตรวจสอบสิทธิ์การเข้าใช้งานกับเซิร์ฟเวอร์นี้ได้</string>
   <string name="auth_account_does_not_exist">ยังไม่มีบัญชีในอุปกรณ์นี้</string>
-  <string name="favorite">ตั้งค่าเป็นแบบออฟไลน์</string>
-  <string name="unfavorite">ยกเลิกการตั้งค่าเป็นแบบออฟไลน์</string>
+  <string name="set_available_offline">ตั้งค่าเป็นแบบออฟไลน์</string>
+  <string name="unset_available_offline">ยกเลิกการตั้งค่าเป็นแบบออฟไลน์</string>
   <string name="common_rename">เปลี่ยนชื่อ</string>
   <string name="common_remove">ลบออก</string>
   <string name="confirmation_remove_file_alert">คุณต้องการที่จะลบ %1$s?</string>
   <string name="confirmation_remove_folder_alert">คุณต้องการที่จะลบ %1$s และเนื้อหาของมัน?</string>
   <string name="confirmation_remove_local">เฉพาะต้นทางเท่านั้น</string>
+  <string name="confirmation_remove_account_alert">คุณต้องการลบบัญชี %1$s?</string>
   <string name="remove_success_msg">ลบเรียบร้อยแล้ว</string>
   <string name="remove_fail_msg">ไม่สามารถลบได้</string>
   <string name="rename_dialog_title">กรอกชื่อใหม่</string>
+  <string name="available_offline_inherited_msg">โฟลเดอร์ที่มีไฟล์นี้สามารถใช้แบบออฟไลน์ได้</string>
   <string name="rename_local_fail_msg">ไฟล์ต้นทางที่คัดลอกไม่สามารถเปลี่ยนชื่อได้, กรุณาเปลี่ยนเป็นชื่อใหม่</string>
   <string name="rename_server_fail_msg">ไม่สามารถเปลี่ยนชื่อได้</string>
   <string name="sync_file_fail_msg">ไม่สามารถตรวจสอบไฟล์รีโมทได้</string>
@@ -313,7 +314,6 @@
   <string name="network_error_socket_timeout_exception">เกิดข้อผิดพลาดขณะที่รอการดำเนินการจากเซิร์ฟเวอร์</string>
   <string name="network_error_connect_timeout_exception">เกิดข้อผิดพลาดขณะที่รอการดำเนินการจากเซิร์ฟเวอร์</string>
   <string name="network_host_not_available">การดำเนินการอาจยังไม่เสร็จสมบูรณ์ เซิร์ฟเวอร์ไม่สามารถใช้งานได้</string>
-  <string name="empty"></string>
   <string name="forbidden_permissions">คุณไม่ได้รับสิทธิ์ %s</string>
   <string name="forbidden_permissions_rename">เพื่อเปลี่ยนชื่อไฟล์นี้</string>
   <string name="forbidden_permissions_delete">เพื่อลบไฟล์นี้</string>
@@ -325,11 +325,12 @@
   <string name="downloader_download_file_not_found">ไฟล์ไม่พร้อมใช้งานบนเซิร์ฟเวอร์</string>
   <string name="prefs_category_accounts">บัญชี</string>
   <string name="prefs_add_account">เพิ่มบัญชี</string>
+  <string name="drawer_manage_accounts">บริหารจัดการบัญชี</string>
   <string name="auth_redirect_non_secure_connection_title">เชื่อมต่อที่ปลอดภัยถูกเปลี่ยนเส้นทางผ่านเราเตอร์ที่ไม่ปลอดภัย</string>
-  <string name="actionbar_logger">บันทึก</string>
+  <string name="actionbar_logger">ไฟล์ Logs</string>
   <string name="log_send_history_button">ส่งประวัติการใช้งานย้อนหลัง</string>
-  <string name="log_send_no_mail_app">ไม่พบแอพสำหรับส่งบันทึกการใช้งาน กรุณาติดตั้งแอพสำหรับส่งเมล</string>
-  <string name="log_send_mail_subject">%1$s บันทึกแอพแอนดรอยด์</string>
+  <string name="log_send_no_mail_app">ไม่พบแอพสำหรับส่งข้อมูล log กรุณาติดตั้งแอพสำหรับส่งเมล</string>
+  <string name="log_send_mail_subject">%1$s ข้อมูล log สำหรับแอพแอนดรอยด์</string>
   <string name="log_progress_dialog_text">กำลังโหลดข้อมูล ...</string>
   <string name="saml_authentication_required_text">จำเป็นต้องยืนยันตัวตน</string>
   <string name="saml_authentication_wrong_pass">รหัสผ่านไม่ถูกต้อง</string>
@@ -366,6 +367,9 @@
   <string name="file_list__footer__files">%1$d ไฟล์</string>
   <string name="file_list__footer__files_and_folder">%1$d ไฟล์, 1 โฟลเดอร์</string>
   <string name="file_list__footer__files_and_folders">%1$d ไฟล์, %2$d โฟลเดอร์</string>
+  <string name="prefs_instant_upload_source_path_title">โฟลเดอร์ของกล้อง (%1$s)</string>
+  <string name="prefs_instant_upload_source_path_title_required">สิ่งจำเป็นต้องใช้</string>
+  <string name="prefs_instant_upload_source_path_title_optional">ตัวเลือก</string>
   <string name="prefs_instant_behaviour_dialogTitle">ไฟล์ต้นฉบับ...</string>
   <string name="prefs_instant_behaviour_title">ไฟล์ต้นฉบับ...</string>
   <string name="upload_copy_files">คัดลอกไฟล์</string>
@@ -411,4 +415,9 @@
   <string name="manage_space_error">บางไฟล์ไม่สามารถลบได้</string>
   <string name="permission_storage_access">กำหนดสิทธิ์เพิ่มเติมที่จำเป็นในการอัพโหลดและดาวน์โหลดไฟล์แล้ว</string>
   <string name="local_file_not_found_toast">ไม่พบไฟล์ที่ไฟล์ระบบต้นทาง</string>
+  <string name="confirmation_remove_files_alert">คุณมั่นใจว่าต้องการลบรายการที่เลือก?</string>
+  <string name="confirmation_remove_folders_alert">คุณต้องการลบรายการที่เลือกและเนื้อหาของพวกเขา?</string>
+  <plurals name="items_selected_count">
+    <item quantity="other">%d รายการที่ถูกเลือก</item>
+  </plurals>
 </resources>

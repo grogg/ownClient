@@ -5,7 +5,7 @@
  *   @author David A. Velasco
  *   @author masensio
  *   Copyright (C) 2011  Bartek Przybylski
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -534,6 +534,8 @@ public class FileContentProvider extends ContentProvider {
             // Create uploads table
             createUploadsTable(db);
 
+            // Create user profiles table
+            createUserProfilesTable(db);
         }
 
         @Override
@@ -763,9 +765,41 @@ public class FileContentProvider extends ContentProvider {
                 }
             }
 
+            if (oldVersion < 15 && newVersion >= 15) {
+                Log_OC.i("SQL", "Entering in the #15 ADD in onUpgrade");
+                db.beginTransaction();
+                try {
+                    // Create user profiles table
+                    createUserProfilesTable(db);
+                    upgraded = true;
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+            }
+
             if (!upgraded)
                 Log_OC.i("SQL", "OUT of the ADD in onUpgrade; oldVersion == " + oldVersion +
                         ", newVersion == " + newVersion);
+
+            if (oldVersion < 16 && newVersion >= 16) {
+                Log_OC.i("SQL", "Entering in the #16 ADD in onUpgrade");
+                db.beginTransaction();
+                try {
+                    db.execSQL("ALTER TABLE " + ProviderTableMeta.FILE_TABLE_NAME +
+                        " ADD COLUMN " + ProviderTableMeta.FILE_TREE_ETAG + " TEXT " +
+                        " DEFAULT NULL");
+
+                    upgraded = true;
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+            }
+            if (!upgraded)
+                Log_OC.i("SQL", "OUT of the ADD in onUpgrade; oldVersion == " + oldVersion +
+                    ", newVersion == " + newVersion);
+
 
         }
     }
@@ -787,6 +821,7 @@ public class FileContentProvider extends ContentProvider {
                         + ProviderTableMeta.FILE_LAST_SYNC_DATE_FOR_DATA + " INTEGER, "
                         + ProviderTableMeta.FILE_MODIFIED_AT_LAST_SYNC_FOR_DATA + " INTEGER, "
                         + ProviderTableMeta.FILE_ETAG + " TEXT, "
+                        + ProviderTableMeta.FILE_TREE_ETAG + " TEXT, "
                         + ProviderTableMeta.FILE_SHARED_VIA_LINK + " INTEGER, "
                         + ProviderTableMeta.FILE_PUBLIC_LINK + " TEXT, "
                         + ProviderTableMeta.FILE_PERMISSIONS + " TEXT null,"
@@ -863,17 +898,19 @@ public class FileContentProvider extends ContentProvider {
                 + ProviderTableMeta.UPLOADS_LAST_RESULT + " INTEGER, "     // Upload LastResult
                 + ProviderTableMeta.UPLOADS_CREATED_BY + " INTEGER );"    // Upload createdBy
         );
-
-
-        /* before:
-        // PRIMARY KEY should always imply NOT NULL. Unfortunately, due to a
-        // bug in some early versions, this is not the case in SQLite.
-        //db.execSQL("CREATE TABLE " + TABLE_UPLOAD + " (" + " path TEXT PRIMARY KEY NOT NULL UNIQUE,"
-        //        + " uploadStatus INTEGER NOT NULL, uploadObject TEXT NOT NULL);");
-        // uploadStatus is used to easy filtering, it has precedence over
-        // uploadObject.getUploadStatus()
-        */
     }
+
+    private void createUserProfilesTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE " + ProviderTableMeta.USER_AVATARS__TABLE_NAME + "("
+            + ProviderTableMeta._ID + " INTEGER PRIMARY KEY, "
+            + ProviderTableMeta.USER_AVATARS__ACCOUNT_NAME + " TEXT, "
+            + ProviderTableMeta.USER_AVATARS__CACHE_KEY + " TEXT, "
+            + ProviderTableMeta.USER_AVATARS__MIME_TYPE + " TEXT, "
+            + ProviderTableMeta.USER_AVATARS__ETAG + " TEXT );"
+        );
+    }
+
+
 
     /**
      * Version 10 of database does not modify its scheme. It coincides with the upgrade of the ownCloud account names

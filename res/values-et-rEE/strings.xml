@@ -13,12 +13,7 @@
   <string name="actionbar_send_file">Saada</string>
   <string name="actionbar_sort">Sorteeri</string>
   <string name="actionbar_sort_title">Sorteeri</string>
-  <string-array name="actionbar_sortby">
-    <item>A-Z</item>
-    <item>Uuem - vanem</item>
-  </string-array>
-  <!--TODO re-enable when server-side folder size calculation is available   
-    	<item>Biggest - Smallest</item>-->
+  <string name="actionbar_sort_by_name">A-Z</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">Kõik failid</string>
@@ -58,9 +53,11 @@
   <string name="sync_string_files">Failid</string>
   <string name="setup_btn_connect">Ühenda</string>
   <string name="uploader_btn_upload_text">Lae üles</string>
+  <string name="uploader_top_message">Vali üleslaadimiste kaust</string>
   <string name="uploader_wrn_no_account_title">Kontot ei leitud</string>
   <string name="uploader_wrn_no_account_setup_btn_text">Seadista</string>
   <string name="uploader_wrn_no_account_quit_btn_text">Lõpeta</string>
+  <string name="uploader_error_title_no_file_to_upload">Ühtegi faili ei laaditud</string>
   <string name="file_list_seconds_ago">sekundit tagasi</string>
   <string name="file_list_empty">Siin pole midagi. Lae midagi üles!</string>
   <string name="file_list_loading">Laadimine...</string>
@@ -89,6 +86,7 @@
   <string name="common_loading">Laadimine ...</string>
   <string name="common_unknown">tundmatu</string>
   <string name="common_error_unknown">Tundmatu viga</string>
+  <string name="common_pending">Ootel</string>
   <string name="about_title">Info</string>
   <string name="change_password">Muuda parooli</string>
   <string name="delete_account">Eemalda konto</string>
@@ -275,7 +273,6 @@ Allpool on loend kohalikest failidest ning serveris asuvatest failidest %5$s, mi
   <string name="network_error_socket_timeout_exception">Serverilt vastuse ootamisel tekkis tõrge, toimingu sooritamine ebaõnnestus</string>
   <string name="network_error_connect_timeout_exception">Serverilt vastuse ootamisel tekkis tõrge, toimingu sooritamine ebaõnnestus</string>
   <string name="network_host_not_available">Toimingu lõpetamine ebaõnnestus, server pole saadaval</string>
-  <string name="empty"></string>
   <string name="forbidden_permissions">Sul ei ole %s õigusi</string>
   <string name="forbidden_permissions_rename">selle faili ümbernimetamiseks</string>
   <string name="forbidden_permissions_delete">selle faili kustutamiseks</string>
@@ -286,6 +283,7 @@ Allpool on loend kohalikest failidest ning serveris asuvatest failidest %5$s, mi
   <string name="downloader_download_file_not_found">Fail ei ole serveris enam kättesaadav</string>
   <string name="prefs_category_accounts">Kontod</string>
   <string name="prefs_add_account">Lisa konto</string>
+  <string name="drawer_manage_accounts">Halda kontosid</string>
   <string name="auth_redirect_non_secure_connection_title">Turvalist ühendust suunatakse läbi turvamata ühenduse.</string>
   <string name="actionbar_logger">Logid</string>
   <string name="log_send_history_button">Saada ajalugu</string>

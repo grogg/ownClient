@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   Copyright (C) 2012  Bartek Przybylski
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -109,6 +109,20 @@ public class AccountUtils {
             }
         }
         return false;
+    }
+
+    /**
+     * returns the user's name based on the account name.
+     *
+     * @param accountName the account name
+     * @return the user's name
+     */
+    public static String getUsernameOfAccount(String accountName) {
+        if (accountName != null) {
+            return accountName.substring(0, accountName.lastIndexOf("@"));
+        } else {
+            return null;
+        }
     }
     
     /**

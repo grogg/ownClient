@@ -4,7 +4,7 @@
  *   @author Bartek Przybylski
  *   @author David A. Velasco
  *   Copyright (C) 2012  Bartek Przybylski
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -26,11 +26,16 @@ package com.joshuaglenlee.ownclient.datamodel;
 import java.io.File;
 
 import android.content.ContentResolver;
+import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.v4.content.FileProvider;
 import android.webkit.MimeTypeMap;
 
+import com.joshuaglenlee.ownclient.R;
+import com.joshuaglenlee.ownclient.lib.common.network.WebdavUtils;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 
 import third_parties.daveKoeller.AlphanumComparator;
@@ -55,6 +60,37 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
     public static final String PATH_SEPARATOR = "/";
     public static final String ROOT_PATH = PATH_SEPARATOR;
 
+    public enum AvailableOfflineStatus {
+
+        /**
+         * File is not available offline
+         */
+        NOT_AVAILABLE_OFFLINE,
+
+        /**
+         * File is available offline
+         */
+        AVAILABLE_OFFLINE,
+
+        /**
+         * File belongs to an available offline folder
+         */
+        AVAILABLE_OFFLINE_PARENT;
+
+        public int getValue() {
+            return ordinal();
+        }
+
+        public static AvailableOfflineStatus fromValue(int value) {
+            if (value > -1 && value < values().length) {
+                return values()[value];
+            } else {
+                return null;
+            }
+        }
+
+    }
+
     private static final String TAG = OCFile.class.getSimpleName();
 
     private long mId;
@@ -69,9 +105,10 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
     private boolean mNeedsUpdating;
     private long mLastSyncDateForProperties;
     private long mLastSyncDateForData;
-    private boolean mFavorite;
+    private AvailableOfflineStatus mAvailableOfflineStatus;
 
     private String mEtag;
+    private String mTreeEtag;
 
     private boolean mShareByLink;
     private String mPublicLink;
@@ -92,6 +129,14 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
      * to {@link #getStorageUri()}
      */
     private Uri mLocalUri;
+
+
+    /**
+     * Exportable URI to the local path of the file contents, if stored in the device.
+     *
+     * Cached after first call, until changed.
+     */
+    private Uri mExposedFileUri;
 
 
     /**
@@ -126,10 +171,15 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         mLocalPath = source.readString();
         mMimeType = source.readString();
         mNeedsUpdating = source.readInt() == 0;
-        mFavorite = source.readInt() == 1;
+        try {
+            mAvailableOfflineStatus = AvailableOfflineStatus.valueOf(source.readString());
+        } catch (IllegalArgumentException x) {
+            mAvailableOfflineStatus = AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE;
+        }
         mLastSyncDateForProperties = source.readLong();
         mLastSyncDateForData = source.readLong();
         mEtag = source.readString();
+        mTreeEtag = source.readString();
         mShareByLink = source.readInt() == 1;
         mPublicLink = source.readString();
         mPermissions = source.readString();
@@ -153,10 +203,11 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         dest.writeString(mLocalPath);
         dest.writeString(mMimeType);
         dest.writeInt(mNeedsUpdating ? 1 : 0);
-        dest.writeInt(mFavorite ? 1 : 0);
+        dest.writeString(mAvailableOfflineStatus.name());
         dest.writeLong(mLastSyncDateForProperties);
         dest.writeLong(mLastSyncDateForData);
         dest.writeString(mEtag);
+        dest.writeString(mTreeEtag);
         dest.writeInt(mShareByLink ? 1 : 0);
         dest.writeString(mPublicLink);
         dest.writeString(mPermissions);
@@ -244,6 +295,32 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         return mLocalUri;
     }
 
+    public Uri getExposedFileUri(Context context) {
+        if (mLocalPath == null || mLocalPath.length() == 0) {
+            return null;
+        }
+        if (mExposedFileUri == null) {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+                // TODO - use FileProvider with any Android version, with deeper testing -> 2.2.0
+                mExposedFileUri = Uri.parse(
+                    ContentResolver.SCHEME_FILE + "://" + WebdavUtils.encodePath(mLocalPath)
+                );
+            } else {
+                // Use the FileProvider to get a content URI
+                try {
+                    mExposedFileUri = FileProvider.getUriForFile(
+                        context,
+                        context.getString(R.string.file_provider_authority),
+                        new File(mLocalPath)
+                    );
+                } catch (IllegalArgumentException e) {
+                    Log_OC.e(TAG, "File can't be exported");
+                }
+            }
+        }
+        return mExposedFileUri;
+    }
+
     /**
      * Can be used to set the path where the file is stored
      *
@@ -252,6 +329,7 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
     public void setStoragePath(String storage_path) {
         mLocalPath = storage_path;
         mLocalUri = null;
+        mExposedFileUri = null;
     }
 
     /**
@@ -372,9 +450,10 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         mModifiedTimestampAtLastSyncForData = 0;
         mLastSyncDateForProperties = 0;
         mLastSyncDateForData = 0;
-        mFavorite = false;
+        mAvailableOfflineStatus = AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE;
         mNeedsUpdating = false;
-        mEtag = null;
+        mEtag = "";
+        mTreeEtag = "";
         mShareByLink = false;
         mPublicLink = null;
         mPermissions = null;
@@ -481,12 +560,19 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         mLastSyncDateForData = lastSyncDate;
     }
 
-    public void setFavorite(boolean favorite) {
-        mFavorite = favorite;
+    public void setAvailableOfflineStatus(AvailableOfflineStatus availableOffline) {
+        mAvailableOfflineStatus = availableOffline;
     }
 
-    public boolean isFavorite() {
-        return mFavorite;
+    public AvailableOfflineStatus getAvailableOfflineStatus() {
+        return mAvailableOfflineStatus;
+    }
+
+    /**
+     * @return      'True' when
+     */
+    public boolean isAvailableOffline() {
+        return (mAvailableOfflineStatus != AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE);
     }
 
     @Override
@@ -520,11 +606,12 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
 
     @Override
     public String toString() {
-        String asString = "[id=%s, name=%s, mime=%s, downloaded=%s, local=%s, remote=%s, " +
-                "parentId=%s, favorite=%s etag=%s]";
-        asString = String.format(asString, Long.valueOf(mId), getFileName(), mMimeType, isDown(),
-                mLocalPath, mRemotePath, Long.valueOf(mParentId), Boolean.valueOf(mFavorite),
-                mEtag);
+        String asString = "[id=%s, name=%s,  etag=%s, tree_etag=%s, mime=%s, downloaded=%s, local=%s, remote=%s, " +
+                "parentId=%s, favorite=%s]";
+        asString = String.format(asString, Long.valueOf(mId), getFileName(), mEtag, mTreeEtag,
+                mMimeType, isDown(), mLocalPath, mRemotePath, Long.valueOf(mParentId),
+                mAvailableOfflineStatus
+        );
         return asString;
     }
 
@@ -536,6 +623,13 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
         this.mEtag = (etag != null ? etag : "");
     }
 
+    public String getTreeEtag() {
+        return mTreeEtag;
+    }
+
+    public void setTreeEtag(String etag) {
+        mTreeEtag = (etag != null ? etag : "");
+    }
 
     public boolean isSharedViaLink() {
         return mShareByLink;
@@ -565,30 +659,39 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
      * @return 'True' if the file contains audio
      */
     public boolean isAudio() {
-        return (mMimeType != null && mMimeType.startsWith("audio/"));
+        return isOfType("audio/");
     }
 
     /**
      * @return 'True' if the file contains video
      */
     public boolean isVideo() {
-        return (mMimeType != null && mMimeType.startsWith("video/"));
+        return isOfType("video/");
     }
 
     /**
      * @return 'True' if the file contains an image
      */
     public boolean isImage() {
-        return ((mMimeType != null && mMimeType.startsWith("image/")) ||
-                getMimeTypeFromName().startsWith("image/"));
+        return isOfType("image/");
     }
 
     /**
      * @return 'True' if the file is simple text (e.g. not application-dependent, like .doc or .docx)
      */
     public boolean isText() {
-        return ((mMimeType != null && mMimeType.startsWith("text/")) ||
-                getMimeTypeFromName().startsWith("text/"));
+        return isOfType("text/");
+    }
+
+    /**
+     * @param   type        Type to match in the file MIME type; it's MUST include the trailing "/"
+     * @return              'True' if the file MIME type matches the received parameter in the type part.
+     */
+    private boolean isOfType(String type) {
+        return (
+            (mMimeType != null && mMimeType.startsWith(type)) ||
+            getMimeTypeFromName().startsWith(type)
+        );
     }
 
     public String getMimeTypeFromName() {
@@ -656,6 +759,22 @@ public class OCFile implements Parcelable, Comparable<OCFile> {
     public boolean isSharedWithMe() {
         String permissions = getPermissions();
         return (permissions != null && permissions.contains(PERMISSION_SHARED_WITH_ME));
+    }
+
+    public void copyLocalPropertiesFrom(OCFile sourceFile) {
+        setParentId(sourceFile.getParentId());
+        setFileId(sourceFile.getFileId());
+        setAvailableOfflineStatus(sourceFile.getAvailableOfflineStatus());
+        setLastSyncDateForData(sourceFile.getLastSyncDateForData());
+        setModificationTimestampAtLastSyncForData(
+            sourceFile.getModificationTimestampAtLastSyncForData()
+        );
+        setStoragePath(sourceFile.getStoragePath());
+        setPublicLink(sourceFile.getPublicLink());
+        setShareViaLink(sourceFile.isSharedViaLink());
+        setShareWithSharee(sourceFile.isSharedWithSharee());
+        setTreeEtag(sourceFile.getTreeEtag());
+        setEtagInConflict(sourceFile.getEtagInConflict());
     }
 
 }

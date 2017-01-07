@@ -13,12 +13,9 @@
   <string name="actionbar_send_file">Dërgoje</string>
   <string name="actionbar_sort">Renditi</string>
   <string name="actionbar_sort_title">Renditi sipas</string>
-  <string-array name="actionbar_sortby">
-    <item>A-Z</item>
-    <item>Më e reja - Më e vjetra</item>
-  </string-array>
-  <!--TODO re-enable when server-side folder size calculation is available   
-    	<item>Biggest - Smallest</item>-->
+  <string name="actionbar_sort_by_name">A-Z</string>
+  <string name="actionbar_sort_by_date">Më e reja - Më e vjetra</string>
+  <string name="actionbar_sort_by_size">Më e madhja - Më e vogla</string>
   <!--TODO re-enable when "Accounts" is available in Navigation Drawer-->
   <!--<string name="drawer_item_accounts">Accounts</string>-->
   <string name="drawer_item_all_files">Krejt kartelat</string>
@@ -75,6 +72,7 @@
   <string name="file_list_loading">Po ngarkohet…</string>
   <string name="file_list_no_app_for_file_type">S’u gjet aplikacion për llojin e kartelës!</string>
   <string name="local_file_list_empty">Në këtë dosje s\’ka kartela.</string>
+  <string name="local_file_list_empty_just_folders">S’ka dosje brenda kësaj dosjeje.</string>
   <string name="upload_list_empty">S’ka ngarkime gati.</string>
   <string name="file_list_folder">dosje</string>
   <string name="file_list_folders">dosje</string>
@@ -103,6 +101,7 @@
   <string name="common_loading">Po ngarkohet …</string>
   <string name="common_unknown">panjohur</string>
   <string name="common_error_unknown">Gabim i panjohur</string>
+  <string name="common_pending">Në pritje</string>
   <string name="about_title">Rreth</string>
   <string name="change_password">Ndryshoni fjalëkalimin</string>
   <string name="delete_account">Hiqe llogarinë</string>
@@ -222,16 +221,18 @@
   <string name="auth_fail_get_user_name">Shërbyesi juaj s\’po përgjigje me id të saktë përdoruesi, ju lutemi, lidhuni me një admin</string>
   <string name="auth_can_not_auth_against_server">S’kryhet dot mirëfilltësimi me këtë shërbyes</string>
   <string name="auth_account_does_not_exist">Llogaria s\’ekziston ende te pajisja</string>
-  <string name="favorite">Caktojeni si të passhëm jo në linjë</string>
-  <string name="unfavorite">Hiqeni si të passhëm jo në linjë</string>
+  <string name="set_available_offline">Caktojeni si të passhëm jo në linjë</string>
+  <string name="unset_available_offline">Hiqeni si të passhëm jo në linjë</string>
   <string name="common_rename">Riemërtojeni</string>
   <string name="common_remove">Hiqe</string>
   <string name="confirmation_remove_file_alert">Doni vërtet të hiqet %1$s?</string>
   <string name="confirmation_remove_folder_alert">Doni vërtet të hiqet %1$s dhe lënda e tij?</string>
   <string name="confirmation_remove_local">Vetëm vendorja</string>
+  <string name="confirmation_remove_account_alert">Doni vërtet të hiqet llogaria %1$s?</string>
   <string name="remove_success_msg">Heqja doli me sukses</string>
   <string name="remove_fail_msg">Heqja dështoi</string>
   <string name="rename_dialog_title">Jepni një emër të ri</string>
+  <string name="available_offline_inherited_msg">Një dosje që përmban këtë kartelë është gati offline</string>
   <string name="rename_local_fail_msg">Kopja vendore s\’u riemërtua dot; provoni një emër tjetër</string>
   <string name="rename_server_fail_msg">Riemërtimi s\’u plotësua dot</string>
   <string name="sync_file_fail_msg">S\’u kap dot kartela e largët</string>
@@ -313,7 +314,6 @@
   <string name="network_error_socket_timeout_exception">Ndodhi një gabim teksa po pritej për shërbyesin, veprimi s\’u krye dot</string>
   <string name="network_error_connect_timeout_exception">Ndodhi një gabim teksa po pritej për shërbyesin, veprimi s\’u krye dot</string>
   <string name="network_host_not_available">Veprimi s\’u plotësua dot, shërbyesi është i pakapshëm</string>
-  <string name="empty"></string>
   <string name="forbidden_permissions">Nuk keni leje %s</string>
   <string name="forbidden_permissions_rename">për riemërtim të kësaj kartele</string>
   <string name="forbidden_permissions_delete">për fshirje të kësaj kartele</string>
@@ -325,6 +325,7 @@
   <string name="downloader_download_file_not_found">Kartela s\’gjendet më te shërbyesi</string>
   <string name="prefs_category_accounts">Llogari</string>
   <string name="prefs_add_account">Shtoni llogari</string>
+  <string name="drawer_manage_accounts">Administroni llogari</string>
   <string name="auth_redirect_non_secure_connection_title">Lidhja e sigurt është ridrejtuar përmes një rruge të pasigurt.</string>
   <string name="actionbar_logger">Regjistra</string>
   <string name="log_send_history_button">Historik dërgimesh</string>
@@ -366,6 +367,9 @@
   <string name="file_list__footer__files">%1$d kartelë</string>
   <string name="file_list__footer__files_and_folder">%1$d kartela, 1 dosje</string>
   <string name="file_list__footer__files_and_folders">%1$d kartela, %2$d dosje</string>
+  <string name="prefs_instant_upload_source_path_title">Dosje kamere (%1$s)</string>
+  <string name="prefs_instant_upload_source_path_title_required">e domosdoshme</string>
+  <string name="prefs_instant_upload_source_path_title_optional">opsionale</string>
   <string name="prefs_instant_behaviour_dialogTitle">Kartela origjinale do të jetë...</string>
   <string name="prefs_instant_behaviour_title">Kartela origjinale do të jetë...</string>
   <string name="upload_copy_files">Kopjoje kartelën</string>

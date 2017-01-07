@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   @author David A. Velasco
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -56,11 +56,13 @@ implements ConfirmationDialogFragmentListener {
 
         boolean containsFolder = false;
         boolean containsDown = false;
-        boolean containsFavorite = false;
+        boolean containsAvailableOffline = false;
         for (OCFile file: files) {
             if (file.isFolder()) containsFolder = true;
             if (file.isDown()) containsDown = true;
-            if (file.isFavorite()) containsFavorite = true;
+            if (file.getAvailableOfflineStatus() != OCFile.AvailableOfflineStatus.NOT_AVAILABLE_OFFLINE) {
+                containsAvailableOffline = true;
+            }
         }
 
         if (files.size() == 1) {
@@ -79,7 +81,7 @@ implements ConfirmationDialogFragmentListener {
 
         }
 
-        int localRemoveButton = (!containsFavorite && (containsFolder || containsDown)) ?
+        int localRemoveButton = (!containsAvailableOffline && (containsFolder || containsDown)) ?
             R.string.confirmation_remove_local :
             -1;
 

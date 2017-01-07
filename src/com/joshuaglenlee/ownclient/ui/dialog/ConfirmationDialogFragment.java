@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   Copyright (C) 2012 Bartek Przybylski
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -97,7 +97,7 @@ public class ConfirmationDialogFragment extends DialogFragment {
             messageArguments = new String[]{};
         }
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity(), R.style.Theme_ownCloud_Dialog)
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
             .setIcon(R.drawable.ic_warning)
             .setIconAttribute(android.R.attr.alertDialogIcon)
             .setMessage(String.format(getString(messageId), messageArguments));

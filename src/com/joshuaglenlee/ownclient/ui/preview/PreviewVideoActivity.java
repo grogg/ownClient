@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   @author David A. Velasco
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -122,6 +122,7 @@ public class PreviewVideoActivity extends FileActivity implements OnCompletionLi
         i.putExtra(EXTRA_AUTOPLAY, mVideoPlayer.isPlaying());
         i.putExtra(EXTRA_START_POSITION, mVideoPlayer.getCurrentPosition());
         setResult(RESULT_OK, i);
+        mVideoPlayer.stopPlayback();
         super.onBackPressed();
     }
 

@@ -1,7 +1,7 @@
 /**
  *   ownCloud Android client application
  *
- *   Copyright (C) 2015 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -49,7 +49,7 @@ import com.joshuaglenlee.ownclient.ui.dialog.LoadingDialog;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 
-public class LogHistoryActivity extends AppCompatActivity {
+public class LogHistoryActivity extends ToolbarActivity {
 
     private static final String MAIL_ATTACHMENT_TYPE = "text/plain";
 
@@ -69,6 +69,8 @@ public class LogHistoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.log_send_file);
+        setupToolbar();
+
         setTitle(getText(R.string.actionbar_logger));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Button deleteHistoryButton = (Button) findViewById(R.id.deleteLogHistoryButton);
@@ -251,9 +253,7 @@ public class LogHistoryActivity extends AppCompatActivity {
      */
     public void showLoadingDialog() {
         // Construct dialog
-        LoadingDialog loading = new LoadingDialog(
-                getResources().getString(R.string.log_progress_dialog_text)
-        );
+        LoadingDialog loading = LoadingDialog.newInstance(R.string.log_progress_dialog_text, false);
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
         loading.show(ft, DIALOG_WAIT_TAG);

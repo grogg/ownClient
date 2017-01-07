@@ -1,7 +1,7 @@
 /**
  *   ownCloud Android client application
  *
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -38,7 +38,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.joshuaglenlee.ownclient.R;
@@ -49,6 +48,7 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.R
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.CreateFolderOperation;
 import com.joshuaglenlee.ownclient.operations.RefreshFolderOperation;
+import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
 import com.joshuaglenlee.ownclient.syncadapter.FileSyncAdapter;
 import com.joshuaglenlee.ownclient.ui.dialog.CreateFolderDialogFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.FileFragment;
@@ -65,18 +65,15 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
     public static final String EXTRA_FILES = FolderPickerActivity.class.getCanonicalName()
             + ".EXTRA_FILES";
 
-    private SyncBroadcastReceiver mSyncBroadcastReceiver;
-
     private static final String TAG = FolderPickerActivity.class.getSimpleName();
     
     private static final String TAG_LIST_OF_FOLDERS = "LIST_OF_FOLDERS";
-       
+
+    private SyncBroadcastReceiver mSyncBroadcastReceiver;
     private boolean mSyncInProgress = false;
 
     protected Button mCancelBtn;
     protected Button mChooseBtn;
-    private ProgressBar mProgressBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +81,7 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
 
         super.onCreate(savedInstanceState); 
 
-        setContentView(R.layout.files_folder_picker);
+        setContentView(R.layout.files_folder_picker);     // beware - inflated in other activities too
         
         if (savedInstanceState == null) {
             createFragments();
@@ -94,17 +91,9 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
         initControls();
 
         // Action bar setup
-        ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+        setupToolbar();
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        mProgressBar.setIndeterminateDrawable(
-                getResources().getDrawable(
-                        R.drawable.actionbar_progress_indeterminate_horizontal));
-        mProgressBar.setIndeterminate(mSyncInProgress);
-        // always AFTER setContentView(...) ; to work around bug in its implementation
-        
         // sets message for empty list of folders
         setBackgroundText();
 
@@ -145,11 +134,7 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
     }
 
     private void createFragments() {
-        OCFileListFragment listOfFiles = new OCFileListFragment();
-        Bundle args = new Bundle();
-        args.putBoolean(OCFileListFragment.ARG_JUST_FOLDERS, true);
-        args.putBoolean(OCFileListFragment.ARG_HIDE_FAB, true);
-        listOfFiles.setArguments(args);
+        OCFileListFragment listOfFiles =  OCFileListFragment.newInstance(true, true, false);
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.add(R.id.fragment_container, listOfFiles, TAG_LIST_OF_FOLDERS);
         transaction.commit();
@@ -203,23 +188,23 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
     }
     
     public void startSyncFolderOperation(OCFile folder, boolean ignoreETag) {
-        long currentSyncTime = System.currentTimeMillis(); 
-        
+
         mSyncInProgress = true;
                 
         // perform folder synchronization
-        RemoteOperation synchFolderOp = new RefreshFolderOperation( folder,
-                                                                        currentSyncTime, 
-                                                                        false,
-                                                                        getFileOperationsHelper().isSharedSupported(),
-                                                                        ignoreETag,
-                                                                        getStorageManager(), 
-                                                                        getAccount(), 
-                                                                        getApplicationContext()
-                                                                      );
-        synchFolderOp.execute(getAccount(), this, null, null);
+        SyncOperation synchFolderOp = new RefreshFolderOperation(
+            folder,
+            getFileOperationsHelper().isSharedSupported(),
+            ignoreETag,
+            getAccount(),
+            getApplicationContext()
+        );
+        synchFolderOp.execute(getStorageManager(), this, null, null);
 
-        mProgressBar.setIndeterminate(true);
+        OCFileListFragment fileListFragment = getListOfFilesFragment();
+        if (fileListFragment != null) {
+            fileListFragment.setProgressBarAsIndeterminate(true);
+        }
 
         setBackgroundText();
     }
@@ -261,6 +246,8 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_menu, menu);
+        menu.findItem(R.id.action_switch_view).setVisible(false);
+        menu.findItem(R.id.action_sync_account).setVisible(false);
         menu.findItem(R.id.action_sort).setVisible(false);
         return true;
     }
@@ -307,7 +294,7 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
     protected void refreshListOfFilesFragment() {
         OCFileListFragment fileListFragment = getListOfFilesFragment();
         if (fileListFragment != null) {
-            fileListFragment.listDirectory();
+            fileListFragment.listDirectory(true);
             // TODO Enable when "On Device" is recovered ?
             // fileListFragment.listDirectory(false);
         }
@@ -500,7 +487,10 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
                     removeStickyBroadcast(intent);
                     Log_OC.d(TAG, "Setting progress visibility to " + mSyncInProgress);
 
-                    mProgressBar.setIndeterminate(mSyncInProgress);
+                    OCFileListFragment fileListFragment = getListOfFilesFragment();
+                    if (fileListFragment != null) {
+                        fileListFragment.setProgressBarAsIndeterminate(mSyncInProgress);
+                    }
 
                     setBackgroundText();
                 }
@@ -524,14 +514,6 @@ public class FolderPickerActivity extends FileActivity implements FileFragment.C
     @Override
     public void showDetails(OCFile file) {
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void onTransferStateChanged(OCFile file, boolean downloading, boolean uploading) {
-            
     }
 
     @Override

@@ -4,7 +4,7 @@
  * @author masensio
  * @author David A. Velasco
  * @author Juan Carlos González Cabrero
- * Copyright (C) 2015 ownCloud Inc.
+ * Copyright (C) 2016 ownCloud GmbH.
  * <p/>
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2,
@@ -38,13 +38,13 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
 import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
+import com.joshuaglenlee.ownclient.lib.resources.status.OwnCloudVersion;
 import com.joshuaglenlee.ownclient.operations.CreateShareViaLinkOperation;
 import com.joshuaglenlee.ownclient.operations.GetSharesForFileOperation;
 import com.joshuaglenlee.ownclient.operations.UnshareOperation;
 import com.joshuaglenlee.ownclient.operations.UpdateSharePermissionsOperation;
 import com.joshuaglenlee.ownclient.providers.UsersAndGroupsSearchProvider;
 import com.joshuaglenlee.ownclient.ui.dialog.ShareLinkToDialog;
-import com.joshuaglenlee.ownclient.ui.dialog.SharePasswordDialogFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.EditShareFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.SearchShareesFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.ShareFileFragment;
@@ -107,7 +107,7 @@ public class ShareActivity extends FileActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log_OC.w(TAG, "Ignored Intent requesting to query for " + query);
 
-        } else if (UsersAndGroupsSearchProvider.ACTION_SHARE_WITH.equals(intent.getAction())) {
+        } else if (UsersAndGroupsSearchProvider.getSuggestIntentAction().equals(intent.getAction())) {
             Uri data = intent.getData();
             String dataString = intent.getDataString();
             String shareWith = dataString.substring(dataString.lastIndexOf('/') + 1);
@@ -142,11 +142,28 @@ public class ShareActivity extends FileActivity
         if (getFile().isSharedWithMe()) {
             return OCShare.READ_PERMISSION_FLAG;    // minimum permissions
 
-        } else if (getFile().isFolder()) {
-            return (isFederated) ? OCShare.FEDERATED_PERMISSIONS_FOR_FOLDER : OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER;
-
-        } else {    // isFile
-            return (isFederated) ? OCShare.FEDERATED_PERMISSIONS_FOR_FILE : OCShare.MAXIMUM_PERMISSIONS_FOR_FILE;
+        } else if (isFederated) {
+            OwnCloudVersion serverVersion =
+                com.joshuaglenlee.ownclient.authentication.AccountUtils.getServerVersion(getAccount());
+            if (serverVersion != null && serverVersion.isNotReshareableFederatedSupported()) {
+                return (
+                    getFile().isFolder() ?
+                        OCShare.FEDERATED_PERMISSIONS_FOR_FOLDER_AFTER_OC9 :
+                        OCShare.FEDERATED_PERMISSIONS_FOR_FILE_AFTER_OC9
+                );
+            } else {
+                return (
+                    getFile().isFolder() ?
+                        OCShare.FEDERATED_PERMISSIONS_FOR_FOLDER_UP_TO_OC9 :
+                        OCShare.FEDERATED_PERMISSIONS_FOR_FILE_UP_TO_OC9
+                );
+            }
+        } else {
+            return (
+                getFile().isFolder() ?
+                    OCShare.MAXIMUM_PERMISSIONS_FOR_FOLDER :
+                    OCShare.MAXIMUM_PERMISSIONS_FOR_FILE
+            );
         }
     }
 
@@ -184,7 +201,7 @@ public class ShareActivity extends FileActivity
     @Override
     public void refreshUsersOrGroupsListFromServer() {
         // Show loading
-        showLoadingDialog(getString(R.string.common_loading));
+        showLoadingDialog(R.string.common_loading);
         // Get Users and Groups
         GetShareWithUsersAsyncTask getTask = new GetShareWithUsersAsyncTask(this);
         Object[] params = {getFile(), getAccount(), getStorageManager()};

@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   @author David A. Velasco
- *   Copyright (C) 2016 ownCloud Inc.
+ *   Copyright (C) 2016 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -85,7 +85,7 @@ public class OCFileUnitTest {
         mFile.setModificationTimestampAtLastSyncForData(MODIFICATION_TIMESTAMP_AT_LAST_SYNC_FOR_DATA);
         mFile.setLastSyncDateForProperties(LAST_SYNC_DATE_FOR_PROPERTIES);
         mFile.setLastSyncDateForData(LAST_SYNC_DATE_FOR_DATA);
-        mFile.setFavorite(true);
+        mFile.setAvailableOfflineStatus(OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE);
         mFile.setEtag(ETAG);
         mFile.setShareViaLink(true);
         mFile.setShareWithSharee(true);
@@ -120,7 +120,10 @@ public class OCFileUnitTest {
         );
         assertThat(fileReadFromParcel.getLastSyncDateForProperties(), is(LAST_SYNC_DATE_FOR_PROPERTIES));
         assertThat(fileReadFromParcel.getLastSyncDateForData(), is(LAST_SYNC_DATE_FOR_DATA));
-        assertThat(fileReadFromParcel.isFavorite(), is(true));
+        assertThat(
+            fileReadFromParcel.getAvailableOfflineStatus(),
+            is(OCFile.AvailableOfflineStatus.AVAILABLE_OFFLINE)
+        );
         assertThat(fileReadFromParcel.getEtag(), is(ETAG));
         assertThat(fileReadFromParcel.isSharedViaLink(), is(true));
         assertThat(fileReadFromParcel.isSharedWithSharee(), is(true));
