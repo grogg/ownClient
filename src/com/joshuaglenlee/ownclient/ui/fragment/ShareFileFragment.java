@@ -25,6 +25,7 @@ import android.accounts.Account;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.SwitchCompat;
@@ -39,7 +40,6 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.authentication.AccountUtils;
@@ -178,7 +178,6 @@ public class ShareFileFragment extends Fragment
         }
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -213,22 +212,40 @@ public class ShareFileFragment extends Fragment
             size.setText(DisplayUtils.bytesToHumanReadable(mFile.getFileLength(), getActivity()));
         }
 
+        final boolean shareWithUsersEnable = AccountUtils.hasSearchUsersSupport(mAccount);
+
+        TextView shareNoUsers = (TextView) view.findViewById(R.id.shareNoUsers);
+
         //  Add User Button
         Button addUserGroupButton = (Button)
                 view.findViewById(R.id.addUserButton);
+
+        // Change the sharing text depending on the server version (at least version 8.2 is needed
+        // for sharing with other users)
+        if (!shareWithUsersEnable) {
+            shareNoUsers.setText(R.string.share_incompatible_version);
+            shareNoUsers.setGravity(View.TEXT_ALIGNMENT_CENTER);
+            addUserGroupButton.setVisibility(View.GONE);
+        }
+
         addUserGroupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean shareWithUsersEnable = AccountUtils.hasSearchUsersSupport(mAccount);
                 if (shareWithUsersEnable) {
                     // Show Search Fragment
                     mListener.showSearchUsersAndGroups();
                 } else {
                     String message = getString(R.string.share_sharee_unavailable);
-                    Toast.makeText(getActivity(), message, Toast.LENGTH_LONG).show();
+                    Snackbar snackbar = Snackbar.make(
+                        getActivity().findViewById(android.R.id.content),
+                        message,
+                        Snackbar.LENGTH_LONG
+                    );
+                    snackbar.show();
                 }
             }
         });
+
 
         // Set listener for user actions on switch for sharing/unsharing via link
         initShareViaLinkListener(view);

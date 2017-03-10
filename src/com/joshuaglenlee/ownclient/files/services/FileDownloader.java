@@ -56,7 +56,7 @@ import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 import com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity;
 import com.joshuaglenlee.ownclient.ui.preview.PreviewImageActivity;
 import com.joshuaglenlee.ownclient.ui.preview.PreviewImageFragment;
-import com.joshuaglenlee.ownclient.utils.ErrorMessageAdapter;
+import com.joshuaglenlee.ownclient.ui.errorhandling.ErrorMessageAdapter;
 
 import java.io.File;
 import java.lang.ref.WeakReference;

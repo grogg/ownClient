@@ -43,7 +43,7 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.shares.GetRemoteShareesOperation;
 import com.joshuaglenlee.ownclient.lib.resources.shares.ShareType;
-import com.joshuaglenlee.ownclient.utils.ErrorMessageAdapter;
+import com.joshuaglenlee.ownclient.ui.errorhandling.ErrorMessageAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -288,6 +288,7 @@ public class UsersAndGroupsSearchProvider extends ContentProvider {
                 // The Toast must be shown in the main thread to grant that will be hidden correctly; otherwise
                 // the thread may die before, an exception will occur, and the message will be left on the screen
                 // until the app dies
+
                 Toast.makeText(
                         getContext().getApplicationContext(),
                         ErrorMessageAdapter.getErrorCauseMessage(

@@ -56,7 +56,6 @@ import com.joshuaglenlee.ownclient.lib.common.OwnCloudAccount;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientManagerFactory;
 import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressListener;
-import com.joshuaglenlee.ownclient.lib.common.operations.OperationCancelledException;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
@@ -66,7 +65,7 @@ import com.joshuaglenlee.ownclient.ui.notifications.NotificationUtils;
 import com.joshuaglenlee.ownclient.operations.UploadFileOperation;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 import com.joshuaglenlee.ownclient.ui.activity.UploadListActivity;
-import com.joshuaglenlee.ownclient.utils.ErrorMessageAdapter;
+import com.joshuaglenlee.ownclient.ui.errorhandling.ErrorMessageAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.AbstractList;

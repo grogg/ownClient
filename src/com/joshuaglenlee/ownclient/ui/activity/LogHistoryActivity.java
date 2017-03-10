@@ -32,21 +32,27 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
+<<<<<<< HEAD:src/com/joshuaglenlee/ownclient/ui/activity/LogHistoryActivity.java
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.dialog.LoadingDialog;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
+=======
+import com.owncloud.android.R;
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.ui.dialog.LoadingDialog;
+import com.owncloud.android.utils.FileStorageUtils;
+>>>>>>> 8e0fca28bc48613d99f55dbd52ef514b7da85ae5:src/com/owncloud/android/ui/activity/LogHistoryActivity.java
 
 
 public class LogHistoryActivity extends ToolbarActivity {
@@ -168,7 +174,12 @@ public class LogHistoryActivity extends ToolbarActivity {
         try {
             startActivity(intent);
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, getString(R.string.log_send_no_mail_app), Toast.LENGTH_LONG).show();
+            Snackbar snackbar = Snackbar.make(
+                findViewById(android.R.id.content),
+                R.string.log_send_no_mail_app,
+                Snackbar.LENGTH_LONG
+            );
+            snackbar.show();
             Log_OC.i(TAG, "Could not find app for sending log history.");
         }
 
