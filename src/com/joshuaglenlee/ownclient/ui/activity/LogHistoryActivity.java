@@ -42,17 +42,10 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-<<<<<<< HEAD:src/com/joshuaglenlee/ownclient/ui/activity/LogHistoryActivity.java
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.dialog.LoadingDialog;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
-=======
-import com.owncloud.android.R;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.ui.dialog.LoadingDialog;
-import com.owncloud.android.utils.FileStorageUtils;
->>>>>>> 8e0fca28bc48613d99f55dbd52ef514b7da85ae5:src/com/owncloud/android/ui/activity/LogHistoryActivity.java
 
 
 public class LogHistoryActivity extends ToolbarActivity {

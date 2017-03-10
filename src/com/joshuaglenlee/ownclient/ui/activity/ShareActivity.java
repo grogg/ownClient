@@ -30,7 +30,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 
-<<<<<<< HEAD:src/com/joshuaglenlee/ownclient/ui/activity/ShareActivity.java
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
@@ -50,31 +49,8 @@ import com.joshuaglenlee.ownclient.ui.fragment.EditShareFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.SearchShareesFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.ShareFileFragment;
 import com.joshuaglenlee.ownclient.ui.fragment.ShareFragmentListener;
-import com.joshuaglenlee.ownclient.utils.ErrorMessageAdapter;
+import com.joshuaglenlee.ownclient.ui.errorhandling.ErrorMessageAdapter;
 import com.joshuaglenlee.ownclient.utils.GetShareWithUsersAsyncTask;
-=======
-import com.owncloud.android.R;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.lib.common.accounts.AccountUtils;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.shares.OCShare;
-import com.owncloud.android.lib.resources.shares.ShareType;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-import com.owncloud.android.operations.CreateShareViaLinkOperation;
-import com.owncloud.android.operations.GetSharesForFileOperation;
-import com.owncloud.android.operations.UnshareOperation;
-import com.owncloud.android.operations.UpdateSharePermissionsOperation;
-import com.owncloud.android.providers.UsersAndGroupsSearchProvider;
-import com.owncloud.android.ui.dialog.ShareLinkToDialog;
-import com.owncloud.android.ui.fragment.EditShareFragment;
-import com.owncloud.android.ui.fragment.SearchShareesFragment;
-import com.owncloud.android.ui.fragment.ShareFileFragment;
-import com.owncloud.android.ui.fragment.ShareFragmentListener;
-import com.owncloud.android.ui.errorhandling.ErrorMessageAdapter;
-import com.owncloud.android.utils.GetShareWithUsersAsyncTask;
->>>>>>> 8e0fca28bc48613d99f55dbd52ef514b7da85ae5:src/com/owncloud/android/ui/activity/ShareActivity.java
 
 
 /**
