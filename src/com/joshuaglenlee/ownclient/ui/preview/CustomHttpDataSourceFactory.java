@@ -1,4 +1,4 @@
-package com.owncloud.android.ui.preview;
+package com.joshuaglenlee.ownclient.ui.preview;
 
 /**
  * ownCloud Android client application

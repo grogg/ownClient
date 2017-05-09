@@ -19,7 +19,7 @@
  *
  */
 
-package com.owncloud.android.ui.preview;
+package com.joshuaglenlee.ownclient.ui.preview;
 
 /**
  * Models the preview video error

@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.owncloud.android.utils;
+package com.joshuaglenlee.ownclient.utils;
 
 public class Extras {
 

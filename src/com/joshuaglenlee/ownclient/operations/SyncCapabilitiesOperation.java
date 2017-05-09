@@ -17,19 +17,19 @@
  *   along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package com.owncloud.android.operations;
+package com.joshuaglenlee.ownclient.operations;
 
 import android.accounts.AccountManager;
 
-import com.owncloud.android.MainApp;
-import com.owncloud.android.lib.common.OwnCloudClient;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.lib.resources.status.GetRemoteCapabilitiesOperation;
-import com.owncloud.android.lib.resources.status.GetRemoteStatusOperation;
-import com.owncloud.android.lib.resources.status.OCCapability;
-import com.owncloud.android.lib.resources.status.OwnCloudVersion;
-import com.owncloud.android.operations.common.SyncOperation;
+import com.joshuaglenlee.ownclient.MainApp;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
+import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.lib.resources.status.GetRemoteCapabilitiesOperation;
+import com.joshuaglenlee.ownclient.lib.resources.status.GetRemoteStatusOperation;
+import com.joshuaglenlee.ownclient.lib.resources.status.OCCapability;
+import com.joshuaglenlee.ownclient.lib.resources.status.OwnCloudVersion;
+import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
 
 /**
  * Get and save capabilities from the server
@@ -72,13 +72,13 @@ public class SyncCapabilitiesOperation extends SyncOperation {
 
         /// save data - OC version
         // need to save separately version in AccountManager, due to bad dependency in
-        // library: com.owncloud.android.lib.common.accounts.AccountUtils#getCredentialsForAccount(...)
-        // and com.owncloud.android.lib.common.accounts.AccountUtils#getServerVersionForAccount(...)
+        // library: com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils#getCredentialsForAccount(...)
+        // and com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils#getServerVersionForAccount(...)
         if (serverVersion != null) {
             AccountManager accountMngr = AccountManager.get(MainApp.getAppContext());
             accountMngr.setUserData(
                 getStorageManager().getAccount(),
-                com.owncloud.android.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION,
+                com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils.Constants.KEY_OC_VERSION,
                 serverVersion.getVersion()
             );
         }

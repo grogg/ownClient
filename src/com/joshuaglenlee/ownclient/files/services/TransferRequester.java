@@ -18,7 +18,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.owncloud.android.files.services;
+package com.joshuaglenlee.ownclient.files.services;
 
 import android.accounts.Account;
 import android.app.job.JobInfo;
@@ -29,15 +29,15 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.PersistableBundle;
 
-import com.owncloud.android.authentication.AccountUtils;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.datamodel.UploadsStorageManager;
-import com.owncloud.android.db.OCUpload;
-import com.owncloud.android.db.UploadResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.utils.ConnectivityUtils;
-import com.owncloud.android.utils.PowerUtils;
-import com.owncloud.android.utils.Extras;
+import com.joshuaglenlee.ownclient.authentication.AccountUtils;
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.datamodel.UploadsStorageManager;
+import com.joshuaglenlee.ownclient.db.OCUpload;
+import com.joshuaglenlee.ownclient.db.UploadResult;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.utils.ConnectivityUtils;
+import com.joshuaglenlee.ownclient.utils.PowerUtils;
+import com.joshuaglenlee.ownclient.utils.Extras;
 
 import java.net.SocketTimeoutException;
 

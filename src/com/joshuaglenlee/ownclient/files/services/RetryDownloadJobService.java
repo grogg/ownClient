@@ -1,4 +1,4 @@
-package com.owncloud.android.files.services;
+package com.joshuaglenlee.ownclient.files.services;
 
 import android.accounts.Account;
 import android.app.job.JobParameters;
@@ -7,11 +7,11 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
-import com.owncloud.android.authentication.AccountUtils;
-import com.owncloud.android.datamodel.FileDataStorageManager;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.utils.Extras;
+import com.joshuaglenlee.ownclient.authentication.AccountUtils;
+import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
+import com.joshuaglenlee.ownclient.utils.Extras;
 
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class RetryDownloadJobService extends JobService {

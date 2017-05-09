@@ -1,4 +1,4 @@
-package com.owncloud.android.ui.preview;
+package com.joshuaglenlee.ownclient.ui.preview;
 
 import android.accounts.Account;
 import android.accounts.AuthenticatorException;
@@ -18,12 +18,12 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
-import com.owncloud.android.MainApp;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.lib.common.OwnCloudBasicCredentials;
-import com.owncloud.android.lib.common.OwnCloudCredentials;
-import com.owncloud.android.lib.common.OwnCloudSamlSsoCredentials;
-import com.owncloud.android.lib.common.accounts.AccountUtils;
+import com.joshuaglenlee.ownclient.MainApp;
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudBasicCredentials;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudCredentials;
+import com.joshuaglenlee.ownclient.lib.common.OwnCloudSamlSsoCredentials;
+import com.joshuaglenlee.ownclient.lib.common.accounts.AccountUtils;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;

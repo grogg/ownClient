@@ -18,14 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.owncloud.android.ui.preview;
+package com.joshuaglenlee.ownclient.ui.preview;
 
 import android.content.Context;
 
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.source.UnrecognizedInputFormatException;
 import com.google.android.exoplayer2.upstream.HttpDataSource;
-import com.owncloud.android.R;
+import com.joshuaglenlee.ownclient.R;
 
 import java.io.EOFException;
 import java.io.IOException;
