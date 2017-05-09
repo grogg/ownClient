@@ -5,7 +5,7 @@
  *   @author David A. Velasco
  *   @author masensio
  *   Copyright (C) 2012  Bartek Przybylski
- *   Copyright (C) 2016 ownCloud GmbH.
+ *   Copyright (C) 2017 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -835,6 +835,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
         if (uri.length() != 0) {
             uri = stripIndexPhpOrAppsFiles(uri, mHostUrlInput);
+            uri = subdomainToLower(uri, mHostUrlInput);
 
             // Handle internationalized domain names
             try {
@@ -936,8 +937,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
     public void onOkClick() {
         // this check should be unnecessary
         if (mServerInfo.mVersion == null || 
-                !mServerInfo.mVersion.isVersionValid()  || 
-                mServerInfo.mBaseUrl == null || 
+                mServerInfo.mBaseUrl == null ||
                 mServerInfo.mBaseUrl.length() == 0) {
             mServerStatusIcon = R.drawable.common_error;
             mServerStatusText = getResources().getString(R.string.auth_wtf_reenter_URL);
@@ -1206,6 +1206,32 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
         return url;
     }
 
+
+    private String subdomainToLower(String url, EditText mHostUrlInput) {
+        if(url.toLowerCase().startsWith("http://") ||
+                url.toLowerCase().startsWith("https://")) {
+            if(url.indexOf("/", 8) != -1)
+                url = url.substring(0, url.indexOf("/", 8)).toLowerCase()
+                        + url.substring(url.indexOf("/", 8), url.length());
+            else
+                url = url.substring(0, url.length()).toLowerCase();
+
+            mHostUrlInput.setText(url);
+        }
+        else {
+            if(url.indexOf("/") != -1)
+                url = url.substring(0, url.indexOf("/")).toLowerCase()
+                        + url.substring(url.indexOf("/"), url.length());
+            else
+                url = url.substring(0, url.length()).toLowerCase();
+
+            mHostUrlInput.setText(url);
+        }
+
+        return url;
+    }
+
+
     // TODO remove, if possible
     private String trimUrlWebdav(String url){       
         if(url.toLowerCase().endsWith(AccountUtils.WEBDAV_PATH_4_0_AND_LATER)){
@@ -1241,25 +1267,12 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
                 }
                 break;
 
-            case NO_NETWORK_CONNECTION:
-                mServerStatusIcon = R.drawable.no_network;
-                mServerStatusText = getResources().getString(R.string.auth_no_net_conn_title);
-                break;
-
-            case SSL_RECOVERABLE_PEER_UNVERIFIED:
-                mServerStatusText = getResources().getString(R.string.auth_ssl_unverified_server_title);
-                break;
-            case TIMEOUT:
-                mServerStatusText = getResources().getString(R.string.auth_timeout_title);
-                break;
-            case HOST_NOT_AVAILABLE:
-                mServerStatusText = getResources().getString(R.string.auth_unknown_host_title);
-                break;
-            case UNHANDLED_HTTP_CODE:
             case OK_REDIRECT_TO_NON_SECURE_CONNECTION:
                 mServerStatusIcon = R.drawable.ic_lock_open;
-                mServerStatusText = getResources().getString(R.string.auth_redirect_non_secure_connection_title);
+                mServerStatusText = ErrorMessageAdapter.getErrorCauseMessage(result, null, getResources());
                 break;
+            case NO_NETWORK_CONNECTION:
+                mServerStatusIcon = R.drawable.no_network;
             default:
                 mServerStatusText = ErrorMessageAdapter.getErrorCauseMessage(result, null, getResources());
         }
@@ -1292,19 +1305,6 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity
 
             case NO_NETWORK_CONNECTION:
                 mAuthStatusIcon = R.drawable.no_network;
-                mAuthStatusText = getResources().getString(R.string.auth_no_net_conn_title);
-                break;
-
-            case SSL_RECOVERABLE_PEER_UNVERIFIED:
-                mAuthStatusText = getResources().getString(R.string.auth_ssl_unverified_server_title);
-                break;
-            case TIMEOUT:
-                mAuthStatusText = getResources().getString(R.string.auth_timeout_title);
-                break;
-            case HOST_NOT_AVAILABLE:
-                mAuthStatusText = getResources().getString(R.string.auth_unknown_host_title);
-                break;
-            case UNHANDLED_HTTP_CODE:
             default:
                 mAuthStatusText = ErrorMessageAdapter.getErrorCauseMessage(result, null, getResources());
         }

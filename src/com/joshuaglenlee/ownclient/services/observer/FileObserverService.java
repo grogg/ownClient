@@ -44,6 +44,7 @@ import com.joshuaglenlee.ownclient.db.PreferenceManager;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.SynchronizeFileOperation;
+import com.joshuaglenlee.ownclient.utils.Extras;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 
@@ -449,7 +450,7 @@ public class FileObserverService extends Service {
         public void onReceive(Context context, Intent intent) {
             Log_OC.d(TAG, "Received broadcast intent " + intent);
 
-            File downloadedFile = new File(intent.getStringExtra(FileDownloader.EXTRA_FILE_PATH));
+            File downloadedFile = new File(intent.getStringExtra(Extras.EXTRA_FILE_PATH));
             String parentPath = downloadedFile.getParent();
             String topPath = FileStorageUtils.getDataFolder();
             AvailableOfflineObserver observer;

@@ -70,6 +70,7 @@
   <string name="file_list_seconds_ago">for få sekunder siden</string>
   <string name="file_list_empty">Ingenting her. Last opp noe!</string>
   <string name="file_list_loading">Laster...</string>
+  <string name="file_list_no_app_for_file_type">Ingen apper funnet for filtypen</string>
   <string name="local_file_list_empty">Det er ingen filer i denne mappen.</string>
   <string name="local_file_list_empty_just_folders">Det er ingen mapper i denne mappen.</string>
   <string name="upload_list_empty">Ingen opplastinger tilgjengelig.</string>
@@ -114,10 +115,17 @@
   <string name="uploader_upload_failed_ticker">Opplasting feilet</string>
   <string name="uploader_upload_failed_content_single">Opplasting av %1$s kunne ikke fullføres</string>
   <string name="uploader_upload_failed_credentials_error">Opplasting feilet, du må logge inn på nytt</string>
+  <string name="uploader_upload_failed_ssl_certificate_not_trusted">Tjenersertifikatet er ikke til å stole på</string>
+  <string name="uploader_upload_text_dialog_title">Sett inn et navn for den nye filen</string>
+  <string name="uploader_upload_text_dialog_filename_error_empty">Filnavn må ikke være tomt</string>
+  <string name="uploader_upload_text_dialog_filename_error_length_max">Filnavn må ikke være mer enn %d tegn</string>
+  <string name="uploader_upload_text_filename_hint">Filnavn</string>
+  <string name="ssl_certificate_not_trusted">Tjenersertifikatet er ikke til å stole på</string>
   <string name="uploads_view_title">Opplastinger</string>
   <string name="uploads_view_group_current_uploads">Nåværende</string>
   <string name="uploads_view_group_failed_uploads">Feilet (trykk for å prøve igjen)</string>
   <string name="uploads_view_group_finished_uploads">Opplastet</string>
+  <string name="uploads_view_group_file_count">%d filer</string>
   <string name="uploads_view_upload_status_succeeded">Ferdig</string>
   <string name="uploads_view_upload_status_cancelled">Avbrutt</string>
   <string name="uploads_view_upload_status_paused">Pauset</string>
@@ -128,6 +136,7 @@
   <string name="uploads_view_upload_status_failed_file_error">Filfeil</string>
   <string name="uploads_view_upload_status_failed_localfile_error">Finner ikke lokal fil</string>
   <string name="uploads_view_upload_status_failed_permission_error">Tillatelsesfeil</string>
+  <string name="uploads_view_upload_status_failed_firewall_error">Forbudt pga. brannmur-regel</string>
   <string name="uploads_view_upload_status_conflict">Konflikt</string>
   <string name="uploads_view_upload_status_service_interrupted">Appen ble avsluttet</string>
   <string name="uploads_view_upload_status_unknown_fail">Ukjent feil</string>
@@ -141,6 +150,7 @@
   <string name="downloader_download_failed_content">Nedlasting av %1$s kunne ikke fullføres</string>
   <string name="downloader_not_downloaded_yet">Ikke lastet ned enda</string>
   <string name="downloader_download_failed_credentials_error">Nedlasting feilet, du må logge inn på nytt</string>
+  <string name="downloader_download_forbidden_permissions">å laste ned denne filen</string>
   <string name="common_choose_account">Velg konto</string>
   <string name="sync_fail_ticker">Synkronisering feilet</string>
   <string name="sync_fail_ticker_unauthorized">Synkronisering feilet, du må logge inn på nytt</string>
@@ -198,12 +208,9 @@
   <string name="auth_account_not_new">En konto for samme bruker og server finnes allerede på enheten</string>
   <string name="auth_account_not_the_same">Den innskrevne brukeren matcher ikke brukeren av denne kontoen</string>
   <string name="auth_unknown_error_title">Ukjent feil oppstod!</string>
-  <string name="auth_unknown_host_title">Fant ikke tjener</string>
   <string name="auth_incorrect_path_title">Finner ikke server instans</string>
-  <string name="auth_timeout_title">Serveren brukte for lang tid på å svare</string>
   <string name="auth_incorrect_address_title">Feil format på server-adresse</string>
   <string name="auth_ssl_general_error_title">Oppstart av SSL feilet</string>
-  <string name="auth_ssl_unverified_server_title">Kunne ikke verifisere SSL-serverens identitet</string>
   <string name="auth_bad_oc_version_title">Ukjent server versjon</string>
   <string name="auth_wrong_connection_title">Klarte ikke å opprette tilkobling</string>
   <string name="auth_secure_connection">Sikker tilkobling opprettet</string>
@@ -232,6 +239,7 @@
   <string name="remove_success_msg">Fjerning var vellykket</string>
   <string name="remove_fail_msg">Fjerning mislyktes</string>
   <string name="rename_dialog_title">Skriv inn et nytt navn</string>
+  <string name="available_offline_inherited_msg">En mappe som inneholder denne filen er tilgjengelig frakoblet</string>
   <string name="rename_local_fail_msg">Lokal kopi kunne ikke endre navn; prøv et annet navn</string>
   <string name="rename_server_fail_msg">Klarte ikke å endre navn</string>
   <string name="sync_file_fail_msg">Eksterne filer kunne ikke sjekkes</string>
@@ -248,6 +256,7 @@
   <string name="wait_for_tmp_copy_from_private_storage">Kopierer fil fra privat lager</string>
   <string name="oauth_check_onoff">Logg inn med oAuth2</string>
   <string name="oauth_login_connection">Kobler til oAuth2 server...</string>
+  <string name="ssl_validator_header">Kunne ikke verifisere dentiteten til serveren</string>
   <string name="ssl_validator_reason_cert_not_trusted">- Serverens sertifikat er ikke til å stole på</string>
   <string name="ssl_validator_reason_cert_expired">- Serverens sertifikat er utløpt</string>
   <string name="ssl_validator_reason_cert_not_yet_valid">- Server-sertifikatets gyldige datoer er i fremtiden</string>
@@ -310,9 +319,7 @@
   <string name="clipboard_label">Tekst kopiert fra %1$s</string>
   <string name="error_cant_bind_to_operations_service">Kritisk feil: kan ikke utføre operasjonene</string>
   <string name="network_error_socket_exception">En feil oppstod ved oppretting av forbindelse til serveren.</string>
-  <string name="network_error_socket_timeout_exception">En feil oppstod ved venting på svar fra serveren. Operasjonen kunne ikke utføres</string>
-  <string name="network_error_connect_timeout_exception">En feil oppstod ved venting på svar fra serveren. Operasjonen kunne ikke utføres</string>
-  <string name="network_host_not_available">Operasjonen kunne ikke fullføres. Server utilgjengelig</string>
+  <string name="network_error_socket_timeout_exception">Serveren brukte for lang tid på å svare</string>
   <string name="forbidden_permissions">Du har ikke tillatelse til %s</string>
   <string name="forbidden_permissions_rename">å omdøpe denne filen</string>
   <string name="forbidden_permissions_delete">å slette denne filen</string>
@@ -321,6 +328,7 @@
   <string name="update_link_forbidden_permissions">å oppdatere denne delingen</string>
   <string name="forbidden_permissions_create">å opprette filen</string>
   <string name="uploader_upload_forbidden_permissions">å laste opp i denne mappen</string>
+  <string name="uploader_upload_forbidden">Opplasting ikke tillatt</string>
   <string name="downloader_download_file_not_found">Filen finnes ikke på serveren lenger</string>
   <string name="prefs_category_accounts">Kontoer</string>
   <string name="prefs_add_account">Legg til en konto</string>
@@ -379,6 +387,7 @@
   <string name="share_file">Del %1$s</string>
   <string name="share_with_user_section_title">Del med brukere og grupper</string>
   <string name="share_no_users">Ingen data delt med brukere ennå</string>
+  <string name="share_incompatible_version">Serveren din må være minst versjon 8.2 for å dele med andre brukere</string>
   <string name="share_add_user_or_group">Legg til bruker eller gruppe</string>
   <string name="share_via_link_section_title">Del lenke</string>
   <string name="share_via_link_expiration_date_label">Sett utløpsdato</string>
@@ -404,7 +413,7 @@
   <string name="edit_share_done">ferdig</string>
   <string name="action_retry_uploads">Forsøkte igjen, feilet.</string>
   <string name="action_clear_failed_uploads">Sletting feilet</string>
-  <string name="action_clear_successful_uploads">Sletting vellykket</string>
+  <string name="action_clear_successful_uploads">Fjern vellykkede</string>
   <string name="action_clear_finished_uploads">Slett alle ferdige</string>
   <string name="action_switch_grid_view">Rutenett-visning</string>
   <string name="action_switch_list_view">Listevisning</string>
@@ -416,6 +425,19 @@
   <string name="local_file_not_found_toast">Filen ble ikke funnet i det lokale filsystemet</string>
   <string name="confirmation_remove_files_alert">Vil du virkelig fjerne de valgte elementene?</string>
   <string name="confirmation_remove_folders_alert">Vil du virkelig fjerne de valgte elementene og innholdet i dem?</string>
+  <string name="failed_upload_quota_exceeded_text">For lite plass på kontoen</string>
+  <string name="auth_forbidden">Forbudt autentisering</string>
+  <string name="actionbar_privacy_policy">Personvernregler</string>
+  <string name="prefs_privacy_policy">Personvernregler</string>
+  <string name="privacy_policy_error">En feil oppstod:</string>
+  <string name="service_unavailable">Serveren er ikke tilgjengelig</string>
+  <string name="streaming_certificate_error">Kan ikke starte strømming fordi server-sertifikatet ditt ikke er klarert.</string>
+  <string name="streaming_unrecognized_input">Dette videoformatet støttes ikke</string>
+  <string name="streaming_file_not_found_error">Denne videoen er ikke tilgjengelig på serveren lenger</string>
+  <string name="streaming_crossed_redirection">Strømming tillates ikke via kryssede omdirigeringer</string>
+  <string name="previewing_video_common_error">Denne videoen kan ikke gjenskapes</string>
+  <string name="previewing_video_not_supported">Forhåndsvisning av video støttes ikke i din Android-versjon. Nedlasting av fil starter automatisk.</string>
+  <string name="streaming_position_not_available">\"Posisjon ikke tilgjengelig\"</string>
   <plurals name="items_selected_count">
     <item quantity="one">%d valgt</item>
     <item quantity="other">%d valgte</item>

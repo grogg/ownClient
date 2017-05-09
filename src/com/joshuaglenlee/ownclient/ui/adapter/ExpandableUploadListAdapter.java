@@ -45,6 +45,7 @@ import com.joshuaglenlee.ownclient.datamodel.UploadsStorageManager.UploadStatus;
 import com.joshuaglenlee.ownclient.db.OCUpload;
 import com.joshuaglenlee.ownclient.db.UploadResult;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.files.services.TransferRequester;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudAccount;
 import com.joshuaglenlee.ownclient.lib.common.network.OnDatatransferProgressListener;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
@@ -88,6 +89,10 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
 
         public String getGroupName() {
             return name;
+        }
+
+        public int getGroupCount() {
+            return items == null ? 0 : items.length;
         }
 
         public Comparator<OCUpload> comparator = new Comparator<OCUpload>() {
@@ -382,8 +387,7 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
                         public void onClick(View v) {
                             File file = new File(upload.getLocalPath());
                             if (file.exists()) {
-                                FileUploader.UploadRequester requester =
-                                    new FileUploader.UploadRequester();
+                                TransferRequester requester = new TransferRequester();
                                 requester.retry(mParentActivity, upload);
                                 refreshView();
                             } else {
@@ -715,12 +719,19 @@ public class ExpandableUploadListAdapter extends BaseExpandableListAdapter imple
         listView.setGroupIndicator(null);
         UploadGroup group = (UploadGroup) getGroup(groupPosition);
         if (convertView == null) {
-            LayoutInflater inflaInflater = (LayoutInflater) mParentActivity
+            LayoutInflater inflater = (LayoutInflater) mParentActivity
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflaInflater.inflate(R.layout.upload_list_group, null);
+            convertView = inflater.inflate(R.layout.upload_list_group, null);
         }
-        TextView tv = (TextView) convertView.findViewById(R.id.uploadListGroupName);
-        tv.setText(group.getGroupName());
+        TextView tvGroupName = (TextView) convertView.findViewById(R.id.uploadListGroupName);
+        TextView tvFileCount = (TextView) convertView.findViewById(R.id.textViewFileCount);
+
+        int stringResFileCount = group.getGroupCount() == 1 ? R.string.uploads_view_group_file_count_single :
+                R.string.uploads_view_group_file_count;
+        String fileCountText = String.format(mParentActivity.getString(stringResFileCount), group.getGroupCount());
+
+        tvGroupName.setText(group.getGroupName());
+        tvFileCount.setText(fileCountText);
         return convertView;
     }
 

@@ -31,6 +31,7 @@ import android.support.v4.content.ContextCompat;
 import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.db.PreferenceManager.InstantUploadsConfiguration;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.files.services.TransferRequester;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.UploadFileOperation;
 import com.joshuaglenlee.ownclient.utils.MimetypeIconUtil;
@@ -262,7 +263,7 @@ public class InstantUploadsHandler {
                 UploadFileOperation.CREATED_AS_INSTANT_VIDEO
             ;
 
-        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        TransferRequester requester = new TransferRequester();
         requester.uploadNewFile(
             context,
             account,

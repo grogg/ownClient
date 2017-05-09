@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   Copyright (C) 2012  Bartek Przybylski
- *   Copyright (C) 2016 ownCloud GmbH.
+ *   Copyright (C) 2017 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -36,7 +36,6 @@ import android.provider.MediaStore;
 import android.support.v4.util.Pair;
 
 import com.joshuaglenlee.ownclient.MainApp;
-import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.db.ProviderMeta.ProviderTableMeta;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
@@ -70,7 +69,6 @@ public class FileDataStorageManager {
 
     private static String TAG = FileDataStorageManager.class.getSimpleName();
 
-
     public FileDataStorageManager(Account account, ContentResolver cr) {
         mContentProviderClient = null;
         mContentResolver = cr;
@@ -82,7 +80,6 @@ public class FileDataStorageManager {
         mContentResolver = null;
         mAccount = account;
     }
-
 
     public void setAccount(Account account) {
         mAccount = account;

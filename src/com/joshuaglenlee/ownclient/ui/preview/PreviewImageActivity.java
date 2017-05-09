@@ -31,7 +31,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -40,6 +39,7 @@ import android.view.View;
 import android.view.Window;
 
 import com.ortiz.touch.ExtendedViewPager;
+<<<<<<< HEAD:src/com/joshuaglenlee/ownclient/ui/preview/PreviewImageActivity.java
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
@@ -57,6 +57,26 @@ import com.joshuaglenlee.ownclient.operations.SynchronizeFileOperation;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 import com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity;
 import com.joshuaglenlee.ownclient.ui.fragment.FileFragment;
+=======
+import com.owncloud.android.R;
+import com.owncloud.android.authentication.AccountUtils;
+import com.owncloud.android.datamodel.FileDataStorageManager;
+import com.owncloud.android.datamodel.OCFile;
+import com.owncloud.android.files.services.FileDownloader;
+import com.owncloud.android.files.services.FileDownloader.FileDownloaderBinder;
+import com.owncloud.android.files.services.FileUploader;
+import com.owncloud.android.files.services.FileUploader.FileUploaderBinder;
+import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
+import com.owncloud.android.lib.common.operations.RemoteOperation;
+import com.owncloud.android.lib.common.operations.RemoteOperationResult;
+import com.owncloud.android.lib.common.utils.Log_OC;
+import com.owncloud.android.operations.RemoveFileOperation;
+import com.owncloud.android.operations.SynchronizeFileOperation;
+import com.owncloud.android.ui.activity.FileActivity;
+import com.owncloud.android.ui.activity.FileDisplayActivity;
+import com.owncloud.android.ui.fragment.FileFragment;
+import com.owncloud.android.utils.Extras;
+>>>>>>> ac532e0ede8b1568157e1f6562c210e16f946820:src/com/owncloud/android/ui/preview/PreviewImageActivity.java
 
 
 /**
@@ -392,8 +412,8 @@ public class PreviewImageActivity extends FileActivity implements
     private class DownloadFinishReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String accountName = intent.getStringExtra(FileDownloader.ACCOUNT_NAME);
-            String downloadedRemotePath = intent.getStringExtra(FileDownloader.EXTRA_REMOTE_PATH);
+            String accountName = intent.getStringExtra(Extras.EXTRA_ACCOUNT_NAME);
+            String downloadedRemotePath = intent.getStringExtra(Extras.EXTRA_REMOTE_PATH);
             if (getAccount().name.equals(accountName) && 
                     downloadedRemotePath != null) {
 
@@ -401,7 +421,7 @@ public class PreviewImageActivity extends FileActivity implements
                 mPreviewImagePagerAdapter.onDownloadEvent(
                     file,
                     intent.getAction(),
-                    intent.getBooleanExtra(FileDownloader.EXTRA_DOWNLOAD_RESULT, false)
+                    intent.getBooleanExtra(Extras.EXTRA_DOWNLOAD_RESULT, false)
                 );
             }
             removeStickyBroadcast(intent);

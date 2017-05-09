@@ -26,6 +26,7 @@ import android.support.v4.app.FragmentManager;
 
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.files.services.TransferRequester;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.UploadFileOperation;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
@@ -157,7 +158,7 @@ public class UriUploader {
      * @param remotePath    Absolute path in the current OC account to set to the uploaded file.
      */
     private void requestUpload(String localPath, String remotePath) {
-        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        TransferRequester requester = new TransferRequester();
         requester.uploadNewFile(
                 mActivity,
                 mAccount,

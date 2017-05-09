@@ -27,6 +27,7 @@ import android.os.Bundle;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.files.services.TransferRequester;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.ui.dialog.ConflictsResolveDialog;
 import com.joshuaglenlee.ownclient.ui.dialog.ConflictsResolveDialog.Decision;
@@ -76,7 +77,7 @@ public class ConflictsResolveActivity extends FileActivity implements OnConflict
                 return;
         }
 
-        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        TransferRequester requester = new TransferRequester();
         requester.uploadUpdate(this, getAccount(), getFile(), behaviour, forceOverwrite);
         finish();
     }

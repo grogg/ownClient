@@ -98,9 +98,11 @@
   <string name="uploader_upload_succeeded_ticker">Üleslaadimine oli edukas</string>
   <string name="uploader_upload_failed_ticker">Üleslaadimine ebaõnnestus</string>
   <string name="uploader_upload_failed_content_single">%1$s üleslaadimise lõpetamine ebaõnnestus</string>
+  <string name="uploader_upload_text_filename_hint">Failinimi</string>
   <string name="uploads_view_title">Üleslaadimised</string>
   <string name="uploads_view_group_current_uploads">Praegune</string>
   <string name="uploads_view_group_finished_uploads">Üles laetud</string>
+  <string name="uploads_view_group_file_count">%d faili</string>
   <string name="uploads_view_upload_status_succeeded">Lõpetatud</string>
   <string name="uploads_view_upload_status_cancelled">Tühistatud</string>
   <string name="uploads_view_upload_status_paused">Peatatud</string>
@@ -175,11 +177,8 @@ Allpool on loend kohalikest failidest ning serveris asuvatest failidest %5$s, mi
   <string name="auth_account_not_new">Sama konto  kasutaja ja server on juba selles seadmes olemas</string>
   <string name="auth_account_not_the_same">Sisestatud kasutaja ei kattu selle konto kasutajaga</string>
   <string name="auth_unknown_error_title">Tekkis tundmatu tõrge!</string>
-  <string name="auth_unknown_host_title">Hosti ei leitud</string>
   <string name="auth_incorrect_path_title">server protsessi ei leitud</string>
-  <string name="auth_timeout_title">Serveri vastus võttis liiga kaua aega</string>
   <string name="auth_ssl_general_error_title">SSL-i käivitamine ebaõnnestus</string>
-  <string name="auth_ssl_unverified_server_title">Serveri SSL identiteedi tuvastamine ebaõnnestus</string>
   <string name="auth_bad_oc_version_title">Tundmatu serveri versioon</string>
   <string name="auth_wrong_connection_title">Ühenduse loomine ebaõnnestus</string>
   <string name="auth_secure_connection">Saavutati turvaline ühendus</string>
@@ -269,9 +268,7 @@ Allpool on loend kohalikest failidest ning serveris asuvatest failidest %5$s, mi
   <string name="clipboard_text_copied">Kopeeritud lõikepuhvrisse</string>
   <string name="error_cant_bind_to_operations_service">Viga: ei suutnud operatsiooni lõpetada</string>
   <string name="network_error_socket_exception">Serveriga ühendumisel tekkis tõrge.</string>
-  <string name="network_error_socket_timeout_exception">Serverilt vastuse ootamisel tekkis tõrge, toimingu sooritamine ebaõnnestus</string>
-  <string name="network_error_connect_timeout_exception">Serverilt vastuse ootamisel tekkis tõrge, toimingu sooritamine ebaõnnestus</string>
-  <string name="network_host_not_available">Toimingu lõpetamine ebaõnnestus, server pole saadaval</string>
+  <string name="network_error_socket_timeout_exception">Serveri vastus võttis liiga kaua aega</string>
   <string name="forbidden_permissions">Sul ei ole %s õigusi</string>
   <string name="forbidden_permissions_rename">selle faili ümbernimetamiseks</string>
   <string name="forbidden_permissions_delete">selle faili kustutamiseks</string>

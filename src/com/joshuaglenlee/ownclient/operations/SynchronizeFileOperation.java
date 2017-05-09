@@ -28,6 +28,7 @@ import android.content.Intent;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader;
 import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.files.services.TransferRequester;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
@@ -227,7 +228,7 @@ public class SynchronizeFileOperation extends SyncOperation {
      * @param file OCFile object representing the file to upload
      */
     private void requestForUpload(OCFile file) {
-        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        TransferRequester requester = new TransferRequester();
         requester.uploadUpdate(mContext, mAccount, file, FileUploader.LOCAL_BEHAVIOUR_MOVE, true);
 
         mTransferWasRequested = true;

@@ -116,11 +116,13 @@
   <string name="uploader_upload_failed_content_single">Uppladdning av %1$s kunde inte slutföras</string>
   <string name="uploader_upload_failed_credentials_error">Uppladdningen misslyckades, du måste logga in igen</string>
   <string name="uploader_upload_failed_ssl_certificate_not_trusted">Litar inte på servercertifikat</string>
+  <string name="uploader_upload_text_filename_hint">Filnamn</string>
   <string name="ssl_certificate_not_trusted">Litar inte på servercertifikat</string>
   <string name="uploads_view_title">Uppladdningar</string>
   <string name="uploads_view_group_current_uploads">Nuvarande</string>
   <string name="uploads_view_group_failed_uploads">Misslyckades (tryck för att försöka igen)</string>
   <string name="uploads_view_group_finished_uploads">Uppladdad</string>
+  <string name="uploads_view_group_file_count">%d filer</string>
   <string name="uploads_view_upload_status_succeeded">Slutförande</string>
   <string name="uploads_view_upload_status_cancelled">Avbruten</string>
   <string name="uploads_view_upload_status_paused">Pausad</string>
@@ -203,12 +205,9 @@
   <string name="auth_account_not_new">En användare med samma namn och server finns redan i denna aparat</string>
   <string name="auth_account_not_the_same">Den angivna användaren matchar inte användaren för detta konto</string>
   <string name="auth_unknown_error_title">Okänt fel inträffade!</string>
-  <string name="auth_unknown_host_title">Kunde inte hitta server</string>
   <string name="auth_incorrect_path_title">Ingen version av server kan hittas</string>
-  <string name="auth_timeout_title">Servern svarar inte</string>
   <string name="auth_incorrect_address_title">Felaktigt server-adressformat</string>
   <string name="auth_ssl_general_error_title">Misslyckad initiering av SSL</string>
-  <string name="auth_ssl_unverified_server_title">Kunde inte identifiera SSL serverns identitet</string>
   <string name="auth_bad_oc_version_title">Okänd server serverversion</string>
   <string name="auth_wrong_connection_title">Kunde inte etablera anslutning</string>
   <string name="auth_secure_connection">Säker anslutning etablerad</string>
@@ -317,9 +316,7 @@
   <string name="clipboard_label">Text kopierad från %1$s</string>
   <string name="error_cant_bind_to_operations_service">Kritiskt fel: kan inte utföra åtgärden</string>
   <string name="network_error_socket_exception">Ett fel uppstod vid anslutning till servern.</string>
-  <string name="network_error_socket_timeout_exception">Ett fel uppstod i väntan på servern, operationen kunde inte ha gjorts</string>
-  <string name="network_error_connect_timeout_exception">Ett fel uppstod i väntan på servern, operationen kunde inte ha gjorts</string>
-  <string name="network_host_not_available">Åtgärden kunte inte slutföras, servern är ej tillgänglig</string>
+  <string name="network_error_socket_timeout_exception">Servern svarar inte</string>
   <string name="forbidden_permissions">Du har inga rättigheter %s</string>
   <string name="forbidden_permissions_rename">att döpa om denna fil</string>
   <string name="forbidden_permissions_delete">att radera denna fil</string>
@@ -328,6 +325,7 @@
   <string name="update_link_forbidden_permissions">att uppdatera denna delning</string>
   <string name="forbidden_permissions_create">att skapa filen</string>
   <string name="uploader_upload_forbidden_permissions">att ladda upp i den här mappen</string>
+  <string name="uploader_upload_forbidden">Filöverföring inte tillåten </string>
   <string name="downloader_download_file_not_found">Filen är inte längre tillgänglig på servern</string>
   <string name="prefs_category_accounts">Konton</string>
   <string name="prefs_add_account">Lägg till konto</string>
@@ -428,6 +426,7 @@
   <string name="actionbar_privacy_policy">Integritetspolicy</string>
   <string name="prefs_privacy_policy">Integritetspolicy</string>
   <string name="privacy_policy_error">Ett fel har inträffat:</string>
+  <string name="service_unavailable">Servern är för närvarande inte tillgänglig.</string>
   <plurals name="items_selected_count">
     <item quantity="one">%d vald</item>
     <item quantity="other">%d valda</item>

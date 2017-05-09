@@ -29,7 +29,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 
 import com.joshuaglenlee.ownclient.R;
-import com.joshuaglenlee.ownclient.files.services.FileUploader;
+import com.joshuaglenlee.ownclient.files.services.TransferRequester;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult.ResultCode;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.UploadFileOperation;
@@ -222,7 +222,7 @@ public class CopyAndUploadContentUrisTask extends AsyncTask<Object, Void, Result
     }
 
     private void requestUpload(Account account, String localPath, String remotePath, int behaviour, String mimeType) {
-        FileUploader.UploadRequester requester = new FileUploader.UploadRequester();
+        TransferRequester requester = new TransferRequester();
         requester.uploadNewFile(
             mAppContext,
             account,

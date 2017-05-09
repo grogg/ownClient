@@ -2,7 +2,7 @@
  *   ownCloud Android client application
  *
  *   @author David A. Velasco
- *   Copyright (C) 2016 ownCloud GmbH.
+ *   Copyright (C) 2017 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -26,6 +26,7 @@ import android.accounts.Account;
 import android.content.Context;
 import android.content.Intent;
 
+import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
@@ -34,6 +35,8 @@ import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.lib.resources.shares.GetRemoteSharesForFileOperation;
 
+import com.joshuaglenlee.ownclient.lib.resources.status.OCCapability;
+import com.joshuaglenlee.ownclient.lib.resources.status.OwnCloudVersion;
 import com.joshuaglenlee.ownclient.operations.common.SyncOperation;
 import com.joshuaglenlee.ownclient.syncadapter.FileSyncAdapter;
 
@@ -119,8 +122,9 @@ public class RefreshFolderOperation extends SyncOperation {
 
         // only in root folder: sync server version and user profile
         if (OCFile.ROOT_PATH.equals(mLocalFolder.getRemotePath())) {
-            updateOCVersion(client);
-            updateUserProfile();
+            OwnCloudVersion serverVersion = syncCapabilitiesAndGetServerVersion();
+            mIsShareSupported = serverVersion.isSharedSupported();
+            syncUserProfile();
         }
 
         // sync list of files, and contents of available offline files & folders
@@ -152,22 +156,7 @@ public class RefreshFolderOperation extends SyncOperation {
         
     }
 
-    private void updateOCVersion(OwnCloudClient client) {
-        UpdateOCVersionOperation update = new UpdateOCVersionOperation(mAccount, mContext);
-        RemoteOperationResult result = update.execute(client);
-        if (result.isSuccess()) {
-            mIsShareSupported = update.getOCVersion().isSharedSupported();
-
-            // Update Capabilities for this account
-            if (update.getOCVersion().isVersionWithCapabilitiesAPI()) {
-                updateCapabilities();
-            } else {
-                Log_OC.d(TAG, "Capabilities API disabled");
-            }
-        }
-    }
-
-    private void updateUserProfile() {
+    private void syncUserProfile() {
         GetUserProfileOperation update = new GetUserProfileOperation();
         RemoteOperationResult result = update.execute(getStorageManager(), mContext);
         if (!result.isSuccess()) {
@@ -177,12 +166,18 @@ public class RefreshFolderOperation extends SyncOperation {
         }
     }
 
-    private void updateCapabilities(){
-        GetCapabilitiesOperarion getCapabilities = new GetCapabilitiesOperarion();
-        RemoteOperationResult  result = getCapabilities.execute(getStorageManager(), mContext);
-        if (!result.isSuccess()){
-            Log_OC.w(TAG, "Update Capabilities unsuccessfully");
+    private OwnCloudVersion syncCapabilitiesAndGetServerVersion() {
+        OwnCloudVersion serverVersion = null;
+        SyncCapabilitiesOperation getCapabilities = new SyncCapabilitiesOperation();
+        RemoteOperationResult result = getCapabilities.execute(getStorageManager(), mContext);
+        if (result.isSuccess()) {
+            OCCapability capability = (OCCapability) result.getData().get(0);
+            serverVersion = new OwnCloudVersion(capability.getVersionString());
+        } else {
+            // get whatever was stored before for the version
+            serverVersion = AccountUtils.getServerVersion(mAccount);
         }
+        return serverVersion;
     }
 
     /**

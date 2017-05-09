@@ -120,11 +120,17 @@
     <string name="uploader_upload_failed_content_single">Upload of %1$s could not be completed</string>
     <string name="uploader_upload_failed_credentials_error">Upload failed, you need to log in again</string>
     <string name="uploader_upload_failed_ssl_certificate_not_trusted">Server certificate is not trusted</string>
+    <string name="uploader_upload_text_dialog_title">Insert a name for the new file</string>
+    <string name="uploader_upload_text_dialog_filename_error_empty">Filename must not be empty</string>
+    <string name="uploader_upload_text_dialog_filename_error_length_max">Filename must not be more than %d characters</string>
+    <string name="uploader_upload_text_filename_hint">Filename</string>
     <string name="ssl_certificate_not_trusted">Server certificate is not trusted</string>
     <string name="uploads_view_title">Uploads</string>
     <string name="uploads_view_group_current_uploads">Current</string>
     <string name="uploads_view_group_failed_uploads">Failed (tap to retry)</string>
     <string name="uploads_view_group_finished_uploads">Uploaded</string>
+    <string name="uploads_view_group_file_count">%d Files</string>
+    <string name="uploads_view_group_file_count_single">%d File</string>
     <string name="uploads_view_upload_status_succeeded">Completed</string>
     <string name="uploads_view_upload_status_cancelled">Cancelled</string>
     <string name="uploads_view_upload_status_paused">Paused</string>
@@ -210,12 +216,9 @@
     <string name="auth_account_not_new">An account for the same user and server already exists in the device</string>
     <string name="auth_account_not_the_same">The entered user does not match the user of this account</string>
     <string name="auth_unknown_error_title">Unknown error occurred!</string>
-    <string name="auth_unknown_host_title">Couldn\'t find host</string>
     <string name="auth_incorrect_path_title">Server instance not found</string>
-    <string name="auth_timeout_title">The server took too long to respond</string>
     <string name="auth_incorrect_address_title">Wrong server address format</string>
     <string name="auth_ssl_general_error_title">SSL initialization failed</string>
-    <string name="auth_ssl_unverified_server_title">Couldn\'t verify SSL server\'s identity</string>
     <string name="auth_bad_oc_version_title">Unrecognized server version</string>
     <string name="auth_wrong_connection_title">Couldn\'t establish connection</string>
     <string name="auth_secure_connection">Secure connection established</string>
@@ -337,9 +340,9 @@
     <string name="error_cant_bind_to_operations_service">Critical error: cannot perform operations</string>
 
     <string name="network_error_socket_exception">An error occurred while connecting with the server.</string>
-    <string name="network_error_socket_timeout_exception">An error occurred while waiting for the server, the operation couldn\'t have been done</string>
-    <string name="network_error_connect_timeout_exception">An error occurred while waiting for the server, the operation couldn\'t have been done</string>
-    <string name="network_host_not_available">The operation couldn\'t be completed, server is unavailable</string>
+    <string name="network_error_socket_timeout_exception">The server took too long to respond</string>
+    <string name="network_error_connect_timeout_exception">The server took too long to connect</string>
+    <string name="network_host_not_available">Unknown host</string>
 
     <string name="forbidden_permissions">You do not have permission %s</string>
     <string name="forbidden_permissions_rename">to rename this file</string>
@@ -475,6 +478,16 @@
     <string name="prefs_privacy_policy">Privacy policy</string>
     <string name="privacy_policy_error">"An error has occurred: "</string>
     <string name="service_unavailable">Server is unavailable</string>
+
+    <string name="streaming_certificate_error">Streaming cannot be initialized because your server certificate is untrusted. File download will start automatically</string>
+    <string name="streaming_unrecognized_input">This video format is not supported</string>
+    <string name="streaming_file_not_found_error">This video file is no longer available in the server</string>
+    <string name="streaming_crossed_redirection">Streaming is not allowed via crossed redirections</string>
+    <string name="previewing_video_common_error">This video cannot be reproduced</string>
+
+    <string name="previewing_video_not_supported">Video previewing is not supported in your Android version. File download will start automatically.</string>
+    <string name="streaming_position_not_available">\"Position not available\"</string>
+    <string name="error_no_network_connection">Device is not connected to a network</string>
 
     <plurals name="items_selected_count">
         <item quantity="one">%d selected</item>

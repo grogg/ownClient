@@ -37,6 +37,7 @@ import com.joshuaglenlee.ownclient.lib.common.OwnCloudClientManagerFactory;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.common.utils.Log_OC;
 import com.joshuaglenlee.ownclient.operations.SynchronizeFolderOperation;
+import com.joshuaglenlee.ownclient.utils.Extras;
 import com.joshuaglenlee.ownclient.utils.FileStorageUtils;
 
 import java.io.IOException;
@@ -179,9 +180,9 @@ class SyncFolderHandler extends Handler {
      */
     private void sendBroadcastNewSyncFolder(Account account, String remotePath) {
         Intent added = new Intent(FileDownloader.getDownloadAddedMessage());
-        added.putExtra(FileDownloader.ACCOUNT_NAME, account.name);
-        added.putExtra(FileDownloader.EXTRA_REMOTE_PATH, remotePath);
-        added.putExtra(FileDownloader.EXTRA_FILE_PATH, FileStorageUtils.getSavePath(account.name)
+        added.putExtra(Extras.EXTRA_ACCOUNT_NAME, account.name);
+        added.putExtra(Extras.EXTRA_REMOTE_PATH, remotePath);
+        added.putExtra(Extras.EXTRA_FILE_PATH, FileStorageUtils.getSavePath(account.name)
                 + remotePath);
         mService.sendStickyBroadcast(added);
     }
@@ -193,11 +194,11 @@ class SyncFolderHandler extends Handler {
     private void sendBroadcastFinishedSyncFolder(Account account, String remotePath,
                                                  boolean success) {
         Intent finished = new Intent(FileDownloader.getDownloadFinishMessage());
-        finished.putExtra(FileDownloader.ACCOUNT_NAME, account.name);
-        finished.putExtra(FileDownloader.EXTRA_REMOTE_PATH, remotePath);
-        finished.putExtra(FileDownloader.EXTRA_FILE_PATH,
+        finished.putExtra(Extras.EXTRA_ACCOUNT_NAME, account.name);
+        finished.putExtra(Extras.EXTRA_REMOTE_PATH, remotePath);
+        finished.putExtra(Extras.EXTRA_FILE_PATH,
                 FileStorageUtils.getSavePath(account.name) + remotePath);
-        finished.putExtra(FileDownloader.EXTRA_DOWNLOAD_RESULT, success);
+        finished.putExtra(Extras.EXTRA_DOWNLOAD_RESULT, success);
         mService.sendStickyBroadcast(finished);
     }
 
