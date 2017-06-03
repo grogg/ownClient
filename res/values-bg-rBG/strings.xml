@@ -230,6 +230,7 @@
   <string name="confirmation_remove_folder_alert">Наистина ли искате да премахнете %1$s и съдържанието му?</string>
   <string name="confirmation_remove_local">Само локално</string>
   <string name="confirmation_remove_account_alert">Сигурни ли сте, че желаете да премахните профила %1$s?</string>
+  <string name="confirmation_remove_public_share_message">Наистина ли искате да изтриете %1$s ?</string>
   <string name="remove_success_msg">Премахването успешно.</string>
   <string name="remove_fail_msg">Неуспешно прехамхване.</string>
   <string name="rename_dialog_title">Въведете ново име</string>
@@ -378,15 +379,14 @@
   <string name="pref_behaviour_entries_move">преместено в папка на приложението</string>
   <string name="share_dialog_title">Споделяне</string>
   <string name="share_file">Сподели %1$s</string>
-  <string name="share_with_user_section_title">Споделяне с потребители и групаи</string>
   <string name="share_no_users">Все още няма споделени с потребители данни </string>
   <string name="share_incompatible_version">За да споделяте с други потребители, Вашият сървър трябва да бъде поне версия 8.2</string>
   <string name="share_add_user_or_group">Добави потребител или група</string>
-  <string name="share_via_link_section_title">Връзка за споделяне</string>
-  <string name="share_via_link_expiration_date_label">Задаване на дата на изтичане</string>
-  <string name="share_via_link_password_label">Защитено с парола</string>
+  <string name="share_cancel_public_link_button">Отказ</string>
+  <string name="share_confirm_public_link_button">Запазване</string>
+  <string name="share_via_link_expiration_date_label">Изтичане</string>
+  <string name="share_via_link_password_label">Парола</string>
   <string name="share_via_link_password_title">Подсигурен</string>
-  <string name="share_via_link_edit_permission_label">Позволяване на редактиране</string>
   <string name="share_get_public_link_button">Получаване на връзка</string>
   <string name="share_with_title">Споделено с ...</string>
   <string name="share_with_edit_title">Сподели с %1$s</string>

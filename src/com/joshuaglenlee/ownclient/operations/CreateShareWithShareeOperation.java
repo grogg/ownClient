@@ -3,7 +3,7 @@
  *
  *   @author masensio
  *   @author David A. Velasco
- *   Copyright (C) 2016 ownCloud GmbH.
+ *   Copyright (C) 2017 ownCloud GmbH.
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License version 2,
@@ -26,12 +26,9 @@ package com.joshuaglenlee.ownclient.operations;
  */
 
 
-import android.accounts.Account;
-
 import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.lib.common.OwnCloudClient;
-import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperation;
 import com.joshuaglenlee.ownclient.lib.common.operations.RemoteOperationResult;
 import com.joshuaglenlee.ownclient.lib.resources.files.FileUtils;
 import com.joshuaglenlee.ownclient.lib.resources.shares.CreateRemoteShareOperation;
@@ -108,7 +105,7 @@ public class CreateShareWithShareeOperation extends SyncOperation {
         // Update OCFile with data from share: ShareByLink  and publicLink
         OCFile file = getStorageManager().getFileByPath(mPath);
         if (file!=null) {
-            file.setShareWithSharee(true);    // TODO - this should be done by the FileContentProvider, as part of getStorageManager().saveShare(share)
+            file.setSharedWithSharee(true);    // TODO - this should be done by the FileContentProvider, as part of getStorageManager().saveShare(share)
             getStorageManager().saveFile(file);
         }
     }

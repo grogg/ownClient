@@ -35,10 +35,10 @@ import com.joshuaglenlee.ownclient.operations.CreateShareWithShareeOperation;
 import com.joshuaglenlee.ownclient.operations.DownloadFileOperation;
 import com.joshuaglenlee.ownclient.operations.MoveFileOperation;
 import com.joshuaglenlee.ownclient.operations.RemoveFileOperation;
+import com.joshuaglenlee.ownclient.operations.RemoveShareOperation;
 import com.joshuaglenlee.ownclient.operations.RenameFileOperation;
 import com.joshuaglenlee.ownclient.operations.SynchronizeFileOperation;
 import com.joshuaglenlee.ownclient.operations.SynchronizeFolderOperation;
-import com.joshuaglenlee.ownclient.operations.UnshareOperation;
 import com.joshuaglenlee.ownclient.operations.UpdateSharePermissionsOperation;
 import com.joshuaglenlee.ownclient.operations.UpdateShareViaLinkOperation;
 import com.joshuaglenlee.ownclient.operations.UploadFileOperation;
@@ -230,7 +230,7 @@ public class ErrorMessageAdapter {
 
             }
 
-        } else if (operation instanceof UnshareOperation) {
+        } else if (operation instanceof RemoveShareOperation) {
 
             if (result.getData() != null && result.getData().size() > 0) {
                 message = (String) result.getData().get(0);     // share API sends its own error messages
@@ -453,7 +453,7 @@ public class ErrorMessageAdapter {
                 ) {
             message = res.getString(R.string.share_link_file_error);
 
-        } else if (operation instanceof UnshareOperation) {
+        } else if (operation instanceof RemoveShareOperation) {
             message = res.getString(R.string.unshare_link_file_error);
 
         } else if (operation instanceof UpdateShareViaLinkOperation ||

@@ -21,6 +21,7 @@
 
 package com.joshuaglenlee.ownclient.ui.fragment;
 
+import com.joshuaglenlee.ownclient.datamodel.OCFile;
 import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
 
 /**
@@ -35,7 +36,10 @@ import com.joshuaglenlee.ownclient.lib.resources.shares.OCShare;
  */
 public interface ShareFragmentListener {
     void showSearchUsersAndGroups();
-    void showEditShare(OCShare share);
-    void refreshUsersOrGroupsListFromServer();
-    void unshareWith(OCShare share);
+    void showEditPrivateShare(OCShare share);
+    void refreshSharesFromServer();
+    void removeShare(OCShare share);
+    void showAddPublicShare(String defaultLinkName);
+    void showEditPublicShare(OCShare share);
+    void copyOrSendPublicLink(OCShare share);
 }

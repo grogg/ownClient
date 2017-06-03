@@ -39,7 +39,6 @@ import android.view.View;
 import android.view.Window;
 
 import com.ortiz.touch.ExtendedViewPager;
-<<<<<<< HEAD:src/com/joshuaglenlee/ownclient/ui/preview/PreviewImageActivity.java
 import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.datamodel.FileDataStorageManager;
@@ -57,26 +56,7 @@ import com.joshuaglenlee.ownclient.operations.SynchronizeFileOperation;
 import com.joshuaglenlee.ownclient.ui.activity.FileActivity;
 import com.joshuaglenlee.ownclient.ui.activity.FileDisplayActivity;
 import com.joshuaglenlee.ownclient.ui.fragment.FileFragment;
-=======
-import com.owncloud.android.R;
-import com.owncloud.android.authentication.AccountUtils;
-import com.owncloud.android.datamodel.FileDataStorageManager;
-import com.owncloud.android.datamodel.OCFile;
-import com.owncloud.android.files.services.FileDownloader;
-import com.owncloud.android.files.services.FileDownloader.FileDownloaderBinder;
-import com.owncloud.android.files.services.FileUploader;
-import com.owncloud.android.files.services.FileUploader.FileUploaderBinder;
-import com.owncloud.android.lib.common.operations.OnRemoteOperationListener;
-import com.owncloud.android.lib.common.operations.RemoteOperation;
-import com.owncloud.android.lib.common.operations.RemoteOperationResult;
-import com.owncloud.android.lib.common.utils.Log_OC;
-import com.owncloud.android.operations.RemoveFileOperation;
-import com.owncloud.android.operations.SynchronizeFileOperation;
-import com.owncloud.android.ui.activity.FileActivity;
-import com.owncloud.android.ui.activity.FileDisplayActivity;
-import com.owncloud.android.ui.fragment.FileFragment;
-import com.owncloud.android.utils.Extras;
->>>>>>> ac532e0ede8b1568157e1f6562c210e16f946820:src/com/owncloud/android/ui/preview/PreviewImageActivity.java
+import com.joshuaglenlee.ownclient.utils.Extras;
 
 
 /**

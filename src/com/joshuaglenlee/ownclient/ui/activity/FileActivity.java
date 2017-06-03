@@ -40,6 +40,7 @@ import com.joshuaglenlee.ownclient.R;
 import com.joshuaglenlee.ownclient.authentication.AccountUtils;
 import com.joshuaglenlee.ownclient.authentication.AuthenticatorActivity;
 import com.joshuaglenlee.ownclient.datamodel.OCFile;
+import com.joshuaglenlee.ownclient.operations.RemoveShareOperation;
 import com.joshuaglenlee.ownclient.operations.RenameFileOperation;
 import com.joshuaglenlee.ownclient.ui.helpers.FileOperationsHelper;
 import com.joshuaglenlee.ownclient.files.services.FileDownloader;
@@ -60,7 +61,6 @@ import com.joshuaglenlee.ownclient.operations.CreateShareWithShareeOperation;
 import com.joshuaglenlee.ownclient.operations.GetSharesForFileOperation;
 import com.joshuaglenlee.ownclient.operations.SynchronizeFileOperation;
 import com.joshuaglenlee.ownclient.operations.SynchronizeFolderOperation;
-import com.joshuaglenlee.ownclient.operations.UnshareOperation;
 import com.joshuaglenlee.ownclient.operations.UpdateSharePermissionsOperation;
 import com.joshuaglenlee.ownclient.operations.UpdateShareViaLinkOperation;
 import com.joshuaglenlee.ownclient.services.OperationsService;
@@ -308,7 +308,7 @@ public class FileActivity extends DrawerActivity
 
         } else if (operation == null ||
                 operation instanceof CreateShareWithShareeOperation ||
-                operation instanceof UnshareOperation ||
+                operation instanceof RemoveShareOperation ||
                 operation instanceof SynchronizeFolderOperation ||
                 operation instanceof UpdateShareViaLinkOperation ||
                 operation instanceof UpdateSharePermissionsOperation
